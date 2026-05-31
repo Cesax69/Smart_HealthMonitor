@@ -127,7 +127,7 @@ fun DashboardScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Botón de simulación — SOLO PARA DEBUG
+                // Botón de simulación — FORZADO PARA PRUEBAS
                 OutlinedButton(
                     onClick = {
                         // Simular lectura del wearable
@@ -139,9 +139,9 @@ fun DashboardScreen(
                         SmartHealthRepository.actualizarPasos(pasosSimulados)
                         SmartHealthRepository.actualizarSpO2(spo2Simulado)
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
                 ) {
-                    Text("Simular dato del wearable (DEBUG)")
+                    Text("Simular dato del wearable (PRUEBA)")
                 }
             }
         }
