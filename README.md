@@ -17,11 +17,10 @@ Desarrollada como proyecto integrador en UTNG — 9° Cuatrimestre 2025.
 - [ ] Android TV — S10-S12
 
 ## Capturas de pantalla
-### Login
-![Login](screenshots/login.png)
-
-### Dashboard
-![Dashboard](screenshots/dashboard.png)
+<p align="center">
+  <img src="screenshots/login.png" width="30%" />
+  <img src="screenshots/dashboard.png" width="30%" />
+</p>
 
 ## Autor
 Cesar — UTNG — Cesax69
