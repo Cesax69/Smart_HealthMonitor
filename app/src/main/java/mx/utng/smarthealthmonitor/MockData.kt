@@ -8,6 +8,10 @@ data class RegistroSalud(
 )
 
 object MockData {
+    const val fcActual = 72
+    const val pasosActual = 4250
+    const val spo2Actual = 98
+
     val historialFC = listOf(
         RegistroSalud(1, 72, "Hoy, 08:00", true),
         RegistroSalud(2, 115, "Hoy, 10:30", false),
