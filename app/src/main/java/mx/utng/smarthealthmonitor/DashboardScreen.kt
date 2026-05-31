@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import mx.utng.smarthealthmonitor.ui.theme.SmartHealthMonitorTheme
 import mx.utng.smarthealthmonitor.ui.viewmodel.DashboardViewModel
+import mx.utng.smarthealthmonitor.data.SmartHealthRepository
 
 @Composable
 fun DashboardScreen(
@@ -122,6 +123,25 @@ fun DashboardScreen(
                             )
                         }
                     }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Botón de simulación — SOLO PARA DEBUG
+                OutlinedButton(
+                    onClick = {
+                        // Simular lectura del wearable
+                        val fcSimulado = (60..110).random()
+                        val pasosSimulados = (3000..8000).random()
+                        val spo2Simulado = (95..100).random()
+                        
+                        SmartHealthRepository.actualizarFC(fcSimulado)
+                        SmartHealthRepository.actualizarPasos(pasosSimulados)
+                        SmartHealthRepository.actualizarSpO2(spo2Simulado)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Simular dato del wearable (DEBUG)")
                 }
             }
         }
