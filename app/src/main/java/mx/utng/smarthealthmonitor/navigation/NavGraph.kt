@@ -1,21 +1,13 @@
 package mx.utng.smarthealthmonitor.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import mx.utng.smarthealthmonitor.DashboardScreen
-import mx.utng.smarthealthmonitor.HistorialScreen
-import mx.utng.smarthealthmonitor.LoginScreen
-import mx.utng.smarthealthmonitor.ui.theme.SmartHealthMonitorTheme
+import mx.utng.smarthealthmonitor.ui.screens.AlertaScreen
+import mx.utng.smarthealthmonitor.ui.screens.DashboardScreen
+import mx.utng.smarthealthmonitor.ui.screens.HistorialScreen
+import mx.utng.smarthealthmonitor.ui.screens.LoginScreen
 
 @Composable
 fun SmartHealthNavGraph() {
@@ -24,73 +16,32 @@ fun SmartHealthNavGraph() {
         navController = navController,
         startDestination = Screen.Login.route
     ) {
-        // ── Login ──────────────────────────────────────
         composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
                     navController.navigate(Screen.Dashboard.route) {
-                        popUpTo(Screen.Login.route) {
-                            inclusive = true // eliminar Login del back stack
-                        }
+                        popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 }
             )
         }
-        // ── Dashboard ──────────────────────────────────
         composable(Screen.Dashboard.route) {
             DashboardScreen(
-                onHistorialClick = {
-                    navController.navigate(Screen.Historial.route)
-                },
-                onAlertClick = {
-                    navController.navigate(Screen.Alerta.route)
-                }
+                onHistorialClick = { navController.navigate(Screen.Historial.route) },
+                onAlertClick = { navController.navigate(Screen.Alerta.route) }
             )
         }
-        // ── Historial ──────────────────────────────────
         composable(Screen.Historial.route) {
-            HistorialScreen(
-                onBack = { navController.popBackStack() }
-            )
+            HistorialScreen(onBack = { navController.popBackStack() })
         }
-        // ── Alerta ─────────────────────────────────────
         composable(Screen.Alerta.route) {
-            PantallaEnConstruccion(
-                titulo = "Enviar alerta",
-                onBack = { navController.popBackStack() }
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PantallaEnConstruccion(titulo: String, onBack: () -> Unit) {
-    SmartHealthMonitorTheme {
-        Scaffold(topBar = {
-            TopAppBar(
-                title = { Text(titulo) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Regresar"
-                        )
-                    }
+            AlertaScreen(
+                fc = 145, 
+                onDismiss = { navController.popBackStack() },
+                onConfirmar = {
+                    navController.popBackStack()
                 }
             )
-        }) { pad ->
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .padding(pad),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    "Próximamente: $titulo",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
         }
     }
 }
