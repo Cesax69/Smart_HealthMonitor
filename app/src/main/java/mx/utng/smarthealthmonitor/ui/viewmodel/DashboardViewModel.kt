@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import mx.utng.smarthealthmonitor.MockData
 import mx.utng.smarthealthmonitor.data.SmartHealthRepository
+import mx.utng.smarthealthmonitor.data.db.LecturaFC
 
 class DashboardViewModel : ViewModel() {
 
@@ -33,5 +34,12 @@ class DashboardViewModel : ViewModel() {
             initialValue = MockData.spo2Actual
         )
         
-    val historial = MockData.historialFC
+    // Historial desde Room (Flow reactivo)
+    val historial: StateFlow<List<LecturaFC>> =
+        SmartHealthRepository.obtenerHistorial()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
 }

@@ -8,22 +8,33 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import mx.utng.smarthealthmonitor.data.db.LecturaFC
 import mx.utng.smarthealthmonitor.ui.theme.SmartHealthMonitorTheme
+import mx.utng.smarthealthmonitor.ui.viewmodel.DashboardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistorialScreen(onBack: () -> Unit) {
+fun HistorialScreen(
+    onBack: () -> Unit,
+    viewModel: DashboardViewModel = viewModel()
+) {
+    val lecturas by viewModel.historial.collectAsState()
+    
     SmartHealthMonitorTheme {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Historial de Frecuencia") },
+                    title = { Text("Historial de FC") },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
                             Icon(
@@ -31,41 +42,65 @@ fun HistorialScreen(onBack: () -> Unit) {
                                 contentDescription = "Regresar"
                             )
                         }
-                    }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    )
                 )
             }
         ) { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(vertical = 16.dp)
-            ) {
-                items(MockData.historialFC) { registro ->
-                    FilaHistorial(registro)
+            if (lecturas.isEmpty()) {
+                // Estado vacío
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No hay lecturas aún.\nEspera a que el reloj envíe datos.",
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentPadding = PaddingValues(vertical = 8.dp)
+                ) {
+                    item {
+                        Text(
+                            text = "${lecturas.size} lecturas registradas",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                    items(lecturas, key = { it.id }) { lectura ->
+                        FilaHistorial(lectura = lectura)
+                    }
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun HistorialPreview() {
-    HistorialScreen(onBack = {})
-}
-
-@Composable
-fun FilaHistorial(registro: RegistroSalud) {
-    val colorEstado = if (registro.esNormal) 
+fun FilaHistorial(lectura: LecturaFC) {
+    val colorEstado = if (lectura.esNormal) 
         MaterialTheme.colorScheme.primary 
     else 
         MaterialTheme.colorScheme.error
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp),
         colors = CardDefaults.cardColors(
             containerColor = colorEstado.copy(alpha = 0.1f)
         )
@@ -87,23 +122,29 @@ fun FilaHistorial(registro: RegistroSalud) {
                 Spacer(modifier = Modifier.width(12.dp))
                 Column {
                     Text(
-                        text = "${registro.bpm} bpm",
+                        text = "${lectura.valorBpm} bpm",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorEstado
                     )
                     Text(
-                        text = if (registro.esNormal) "Normal" else "Elevada",
+                        text = if (lectura.esNormal) "Normal" else "Elevada",
                         fontSize = 14.sp,
                         color = colorEstado
                     )
                 }
             }
             Text(
-                text = registro.fecha,
+                text = lectura.hora,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HistorialPreview() {
+    HistorialScreen(onBack = {})
 }
