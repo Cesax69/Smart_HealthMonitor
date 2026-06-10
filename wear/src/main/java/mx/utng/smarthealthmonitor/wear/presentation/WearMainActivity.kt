@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.Text
 import mx.utng.smarthealthmonitor.wear.presentation.theme.SmartHealthWearTheme
 
@@ -16,7 +17,6 @@ class WearMainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SmartHealthWearTheme {
-                // TODO Ej.02: reemplazar con WearNavGraph
                 WearDashboardScreen()
             }
         }
@@ -30,5 +30,13 @@ fun WearDashboardScreen() {
         contentAlignment = Alignment.Center
     ) {
         Text(text = "Wear Dashboard")
+    }
+}
+
+@Preview(device = "id:wearos_large_round", showSystemUi = true)
+@Composable
+fun WearDashboardPreview() {
+    SmartHealthWearTheme {
+        WearDashboardScreen()
     }
 }
