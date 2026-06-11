@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "mx.utng.smarthealthmonitor"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "mx.utng.smarthealthmonitor"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -64,6 +64,9 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    // Módulo Compartido
+    implementation(project(":shared"))
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
