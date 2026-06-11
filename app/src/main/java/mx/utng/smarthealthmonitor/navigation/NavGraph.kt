@@ -27,8 +27,7 @@ fun SmartHealthNavGraph() {
         }
         composable(Screen.Dashboard.route) {
             DashboardScreen(
-                onHistorialClick = { navController.navigate(Screen.Historial.route) },
-                onAlertClick = { navController.navigate(Screen.Alerta.route) }
+                onHistorialClick = { navController.navigate(Screen.Historial.route) }
             )
         }
         composable(Screen.Historial.route) {
@@ -38,7 +37,7 @@ fun SmartHealthNavGraph() {
             AlertaScreen(
                 fc = 145, 
                 onDismiss = { navController.popBackStack() },
-                onConfirmar = {
+                onConfirmar = { _ ->
                     navController.popBackStack()
                 }
             )
