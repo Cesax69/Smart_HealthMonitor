@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "mx.utng.smarthealthmonitor.wear-mergeDebugResources-65:/values-b+es+419/values-b+es+419.xml",
+            "outputFile": "mx.utng.smarthealthmonitor.wear-mergeDebugResources-66:/values-b+es+419/values-b+es+419.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\cesar\\.gradle\\caches\\9.4.1\\transforms\\64f482f3ccc98b9e1a590b5d5c9fe6ca\\transformed\\jetified-horologist-compose-material-0.6.17\\res\\values-b+es+419\\values-b+es+419.xml",
+                    "source": "C:\\Users\\cesar\\.gradle\\caches\\9.4.1\\transforms\\ba584db6ba07248c5f01892ef791ef71\\transformed\\jetified-horologist-compose-material-0.6.17\\res\\values-b+es+419\\values-b+es+419.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

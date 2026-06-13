@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "mx.utng.smarthealthmonitor.wear-mergeDebugResources-65:/values-v21/values-v21.xml",
+            "outputFile": "mx.utng.smarthealthmonitor.wear-mergeDebugResources-66:/values-v21/values-v21.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\cesar\\.gradle\\caches\\9.4.1\\transforms\\ca3033fa54d04675c15dfa135771afb2\\transformed\\core-1.13.1\\res\\values-v21\\values-v21.xml",
+                    "source": "C:\\Users\\cesar\\.gradle\\caches\\9.4.1\\transforms\\f0cad1f837f1015174b042bafb8da87f\\transformed\\core-1.13.1\\res\\values-v21\\values-v21.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,13",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4",
