@@ -1,0 +1,4 @@
+mx.utng.smarthealthmonitor.wear.test.wear-androidTest-0 C:\Users\cesar\AndroidStudioProjects\SmartHealthMonitor\wear\build\generated\res\resValues\androidTest\debug
+mx.utng.smarthealthmonitor.wear.test.wear-mergeDebugAndroidTestResources-1 C:\Users\cesar\AndroidStudioProjects\SmartHealthMonitor\wear\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+mx.utng.smarthealthmonitor.wear.test.wear-mergeDebugAndroidTestResources-2 C:\Users\cesar\AndroidStudioProjects\SmartHealthMonitor\wear\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+mx.utng.smarthealthmonitor.wear.test.wear-debugAndroidTest-3 C:\Users\cesar\AndroidStudioProjects\SmartHealthMonitor\wear\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
