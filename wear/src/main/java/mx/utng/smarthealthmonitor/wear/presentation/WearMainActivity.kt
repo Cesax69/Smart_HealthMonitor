@@ -3,13 +3,8 @@ package mx.utng.smarthealthmonitor.wear.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.wear.compose.material.Text
 import mx.utng.smarthealthmonitor.wear.presentation.theme.SmartHealthWearTheme
 
 class WearMainActivity : ComponentActivity() {
@@ -17,19 +12,9 @@ class WearMainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SmartHealthWearTheme {
-                WearDashboardScreen()
+                SmartHealthWearNavGraph()
             }
         }
-    }
-}
-
-@Composable
-fun WearDashboardScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Wear Dashboard")
     }
 }
 
@@ -38,5 +23,13 @@ fun WearDashboardScreen() {
 fun WearDashboardPreview() {
     SmartHealthWearTheme {
         WearDashboardScreen()
+    }
+}
+
+@Preview(device = "id:wearos_large_round", showSystemUi = true)
+@Composable
+fun WearAlertaPreview() {
+    SmartHealthWearTheme {
+        WearAlertaScreen(fc = 120, onConfirmar = {}, onCancelar = {})
     }
 }
