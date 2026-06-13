@@ -18,11 +18,11 @@ fun WearDashboardScreen(
     viewModel: WearDashboardViewModel = viewModel()
 ) {
     val fc by viewModel.fc.collectAsState()
+    val pasos by viewModel.pasos.collectAsState()
     val listState = rememberScalingLazyListState()
 
     Scaffold(
         timeText = {
-            // La hora desaparece al hacer scroll
             TimeText(modifier = Modifier.scrollAway(listState))
         },
         positionIndicator = {
@@ -33,14 +33,29 @@ fun WearDashboardScreen(
             state = listState,
             modifier = Modifier.fillMaxSize()
         ) {
-            // Item 1: Card de FC
+            // Item 1: Card de FC (Ejercicio Principal)
             item {
                 WearFCCard(
                     fc = fc,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            // Item 2: Chip de Alerta
+
+            // Item 2: CompactChip de Pasos (Reto Adicional)
+            item {
+                CompactChip(
+                    label = { 
+                        Text(
+                            text = if (pasos == 0) "-- pasos" else "$pasos pasos"
+                        ) 
+                    },
+                    onClick = { /* Navegar a pasos si fuera necesario */ },
+                    colors = ChipDefaults.secondaryChipColors(),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // Item 3: Chip de Alerta (Ejercicio Principal)
             item {
                 Chip(
                     label = { Text("⚠ Alerta") },
