@@ -55,6 +55,9 @@ dependencies {
     implementation(libs.horologist.compose.layout)
     implementation(libs.horologist.compose.material)
 
+    // Icons
+    implementation(libs.androidx.compose.material.icons.extended)
+
     // Health Services API
     implementation("androidx.health:health-services-client:1.1.0-alpha03")
     implementation("com.google.guava:guava:33.0.0-android")

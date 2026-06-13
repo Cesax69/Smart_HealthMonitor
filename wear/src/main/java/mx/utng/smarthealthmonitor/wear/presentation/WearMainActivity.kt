@@ -12,7 +12,7 @@ class WearMainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SmartHealthWearTheme {
-                WearDashboardScreen()
+                SmartHealthWearNavGraph()
             }
         }
     }
@@ -23,5 +23,13 @@ class WearMainActivity : ComponentActivity() {
 fun WearDashboardPreview() {
     SmartHealthWearTheme {
         WearDashboardScreen()
+    }
+}
+
+@Preview(device = "id:wearos_large_round", showSystemUi = true)
+@Composable
+fun WearAlertaPreview() {
+    SmartHealthWearTheme {
+        WearAlertaScreen(fc = 120, onConfirmar = {}, onCancelar = {})
     }
 }

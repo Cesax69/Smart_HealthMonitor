@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "mx.utng.smarthealthmonitor.wear-mergeDebugResources-66:/values-fil/values-fil.xml",
+            "outputFile": "mx.utng.smarthealthmonitor.wear-mergeDebugResources-67:/values-fil/values-fil.xml",
             "map": [
                 {
                     "source": "C:\\Users\\cesar\\.gradle\\caches\\9.4.1\\transforms\\ba584db6ba07248c5f01892ef791ef71\\transformed\\jetified-horologist-compose-material-0.6.17\\res\\values-fil\\values-fil.xml",

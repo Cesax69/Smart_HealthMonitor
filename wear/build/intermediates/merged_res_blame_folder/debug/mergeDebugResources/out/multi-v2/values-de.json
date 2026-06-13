@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "mx.utng.smarthealthmonitor.wear-mergeDebugResources-66:/values-de/values-de.xml",
+            "outputFile": "mx.utng.smarthealthmonitor.wear-mergeDebugResources-67:/values-de/values-de.xml",
             "map": [
                 {
                     "source": "C:\\Users\\cesar\\.gradle\\caches\\9.4.1\\transforms\\ec799b8ea101c4f4c32582edc25f0999\\transformed\\jetified-play-services-basement-18.4.0\\res\\values-de\\values.xml",
