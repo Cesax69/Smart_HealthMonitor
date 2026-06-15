@@ -23,10 +23,10 @@
       </SelectionState>
       <SelectionState runConfigName="wear">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-06-09T22:43:45.455003400Z">
+        <DropdownSelection timestamp="2026-06-15T21:33:04.302148Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\cesar\.android\avd\Pixel_6.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\cesar\.android\avd\Mi_reloj.avd" />
             </handle>
           </Target>
         </DropdownSelection>
