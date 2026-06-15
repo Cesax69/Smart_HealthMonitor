@@ -22,6 +22,7 @@ fun WearDashboardScreen(
     viewModel: WearDashboardViewModel = viewModel()
 ) {
     val fc by viewModel.fc.collectAsState()
+    val pasos by viewModel.pasos.collectAsState()
     val listState = rememberScalingLazyListState()
 
     Scaffold(
@@ -33,6 +34,27 @@ fun WearDashboardScreen(
             modifier = Modifier.fillMaxSize(),
             autoCentering = AutoCenteringParams(itemIndex = 0)
         ) {
+            // 1. Card de FC
+            item {
+                WearFCCard(
+                    fc = fc,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+                )
+            }
+
+            // 2. Chip de Pasos
+            item {
+                CompactChip(
+                    label = { 
+                        Text(text = if (pasos == 0) "-- pasos" else "$pasos pasos") 
+                    },
+                    onClick = { },
+                    colors = ChipDefaults.secondaryChipColors(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)
+                )
+            }
+
+            // 3. Botón de Historial (Restaurado a su posición original)
             item {
                 Chip(
                     label = { Text("🕒 Historial") },
@@ -42,13 +64,7 @@ fun WearDashboardScreen(
                 )
             }
 
-            item {
-                WearFCCard(
-                    fc = fc,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
-                )
-            }
-
+            // 4. Botón de Alerta
             item {
                 Chip(
                     label = { Text("⚠ Alerta") },
