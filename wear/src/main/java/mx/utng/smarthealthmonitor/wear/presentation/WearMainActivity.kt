@@ -3,7 +3,7 @@ package mx.utng.smarthealthmonitor.wear.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import mx.utng.smarthealthmonitor.wear.presentation.theme.SmartHealthWearTheme
 
@@ -12,7 +12,21 @@ class WearMainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SmartHealthWearTheme {
-                SmartHealthWearNavGraph()
+                var currentScreen by remember { mutableStateOf("dashboard") }
+
+                when (currentScreen) {
+                    "dashboard" -> {
+                        WearDashboardScreen(
+                            onAlertClick = { /* No necesario para esta prueba */ },
+                            onHistoryClick = { currentScreen = "historial" }
+                        )
+                    }
+                    "historial" -> {
+                        WearHistorialScreen(
+                            onBack = { currentScreen = "dashboard" }
+                        )
+                    }
+                }
             }
         }
     }
@@ -23,13 +37,5 @@ class WearMainActivity : ComponentActivity() {
 fun WearDashboardPreview() {
     SmartHealthWearTheme {
         WearDashboardScreen(onAlertClick = {}, onHistoryClick = {})
-    }
-}
-
-@Preview(device = "id:wearos_large_round", showSystemUi = true)
-@Composable
-fun WearAlertaPreview() {
-    SmartHealthWearTheme {
-        WearAlertaScreen(fc = 120, onConfirmar = {}, onCancelar = {})
     }
 }
