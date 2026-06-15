@@ -1,10 +1,11 @@
 package mx.utng.smarthealthmonitor.wear.presentation
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.wear.compose.material.Text
 import mx.utng.smarthealthmonitor.wear.presentation.theme.SmartHealthWearTheme
 
 class WearMainActivity : ComponentActivity() {
@@ -12,30 +13,22 @@ class WearMainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SmartHealthWearTheme {
-                var currentScreen by remember { mutableStateOf("dashboard") }
+                var showHistory by remember { mutableStateOf(false) }
 
-                when (currentScreen) {
-                    "dashboard" -> {
-                        WearDashboardScreen(
-                            onAlertClick = { /* No necesario para esta prueba */ },
-                            onHistoryClick = { currentScreen = "historial" }
-                        )
-                    }
-                    "historial" -> {
-                        WearHistorialScreen(
-                            onBack = { currentScreen = "dashboard" }
-                        )
-                    }
+                if (!showHistory) {
+                    WearDashboardScreen(
+                        onAlertClick = { },
+                        onHistoryClick = {
+                            Toast.makeText(this@WearMainActivity, "Switching to History", Toast.LENGTH_SHORT).show()
+                            showHistory = true
+                        }
+                    )
+                } else {
+                    WearHistorialScreen(
+                        onBack = { showHistory = false }
+                    )
                 }
             }
         }
-    }
-}
-
-@Preview(device = "id:wearos_large_round", showSystemUi = true)
-@Composable
-fun WearDashboardPreview() {
-    SmartHealthWearTheme {
-        WearDashboardScreen(onAlertClick = {}, onHistoryClick = {})
     }
 }
