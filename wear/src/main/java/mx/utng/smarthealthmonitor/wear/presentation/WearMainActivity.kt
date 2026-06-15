@@ -22,7 +22,7 @@ class WearMainActivity : ComponentActivity() {
 @Composable
 fun WearDashboardPreview() {
     SmartHealthWearTheme {
-        WearDashboardScreen()
+        WearDashboardScreen(onAlertClick = {}, onHistoryClick = {})
     }
 }
 
