@@ -1,6 +1,5 @@
 package mx.utng.smarthealthmonitor.wear.presentation
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.foundation.lazy.AutoCenteringParams
@@ -23,7 +21,6 @@ fun WearDashboardScreen(
     onHistoryClick: () -> Unit,
     viewModel: WearDashboardViewModel = viewModel()
 ) {
-    val context = LocalContext.current
     val fc by viewModel.fc.collectAsState()
     val listState = rememberScalingLazyListState()
 
@@ -38,15 +35,10 @@ fun WearDashboardScreen(
         ) {
             item {
                 Chip(
-                    label = { Text("ABRIR HISTORIAL") },
-                    onClick = {
-                        Toast.makeText(context, "Clic detectado", Toast.LENGTH_SHORT).show()
-                        onHistoryClick()
-                    },
-                    colors = ChipDefaults.primaryChipColors(
-                        backgroundColor = MaterialTheme.colors.secondary
-                    ),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+                    label = { Text("🕒 Historial") },
+                    onClick = onHistoryClick,
+                    colors = ChipDefaults.secondaryChipColors(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                 )
             }
 
@@ -59,12 +51,12 @@ fun WearDashboardScreen(
 
             item {
                 Chip(
-                    label = { Text("Alerta") },
+                    label = { Text("⚠ Alerta") },
                     onClick = onAlertClick,
                     colors = ChipDefaults.primaryChipColors(
                         backgroundColor = MaterialTheme.colors.error
                     ),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                 )
             }
         }

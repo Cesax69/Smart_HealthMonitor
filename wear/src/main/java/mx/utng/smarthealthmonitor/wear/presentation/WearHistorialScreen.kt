@@ -1,14 +1,23 @@
 package mx.utng.smarthealthmonitor.wear.presentation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.wear.compose.foundation.lazy.*
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.items
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
+import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material.*
 import mx.utng.smarthealthmonitor.shared.data.LecturaFC
 
@@ -18,30 +27,57 @@ fun WearHistorialScreen(
     viewModel: WearDashboardViewModel = viewModel()
 ) {
     val historial by viewModel.historial.collectAsState()
+    val listState = rememberScalingLazyListState()
+    val focusRequester = remember { FocusRequester() }
 
-    // Pantalla ultra-visible con fondo gris para notar el cambio
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.DarkGray),
-        contentAlignment = Alignment.Center
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
+    Scaffold(
+        timeText = { TimeText() },
+        positionIndicator = { PositionIndicator(scalingLazyListState = listState) }
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("PANTALLA HISTORIAL", color = Color.Green)
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Text("Registros: ${historial.size}")
-            
-            historial.take(3).forEach { lectura ->
-                Text("${lectura.valorBpm} bpm - ${lectura.hora}", style = MaterialTheme.typography.caption2)
+        ScalingLazyColumn(
+            state = listState,
+            modifier = Modifier
+                .fillMaxSize()
+                .rotaryScrollable(
+                    behavior = RotaryScrollableDefaults.behavior(scrollableState = listState),
+                    focusRequester = focusRequester
+                )
+                .focusRequester(focusRequester)
+        ) {
+            item {
+                Text(
+                    text = "Historial (${historial.size})",
+                    style = MaterialTheme.typography.title3,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
             }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Button(onClick = onBack) {
-                Text("CERRAR")
+
+            if (historial.isEmpty()) {
+                item {
+                    Text("Sin lecturas", style = MaterialTheme.typography.body2)
+                }
+            } else {
+                items(historial) { lectura ->
+                    WearFilaHistorial(lectura = lectura)
+                }
             }
         }
     }
+}
+
+@Composable
+fun WearFilaHistorial(lectura: LecturaFC) {
+    val color = if (lectura.esNormal) MaterialTheme.colors.primary else MaterialTheme.colors.error
+    
+    Chip(
+        label = { Text("${lectura.valorBpm} bpm", color = color) },
+        secondaryLabel = { Text(lectura.hora) },
+        onClick = { },
+        colors = ChipDefaults.secondaryChipColors(),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
+    )
 }
