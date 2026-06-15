@@ -43,7 +43,7 @@
         <service
             android:name=".watchface.SmartHealthWatchFaceService"
             android:exported="true"
-            android:label="!!! SmartHealth !!!"
+            android:label="SmartHealth"
             android:permission="android.permission.BIND_WALLPAPER">
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
@@ -60,7 +60,7 @@
                 android:resource="@drawable/preview_digital" />
             <meta-data
                 android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
-                android:value="mx.utng.smarthealthmonitor.wear.WATCH_FACE_CONFIG" />
+                android:value="androidx.wear.watchface.editor.action.WATCH_FACE_EDITOR" />
         </service>
 
     </application>
