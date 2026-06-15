@@ -5,6 +5,7 @@ import android.graphics.*
 import android.view.SurfaceHolder
 import androidx.wear.watchface.CanvasType
 import androidx.wear.watchface.ComplicationSlotsManager
+import androidx.wear.watchface.DrawMode
 import androidx.wear.watchface.Renderer
 import androidx.wear.watchface.WatchState
 import androidx.wear.watchface.style.CurrentUserStyleRepository
@@ -53,27 +54,36 @@ class SmartHealthRenderer(
         zonedDateTime: ZonedDateTime,
         sharedAssets: SharedAssets
     ) {
+        val inAmbientMode = renderParameters.drawMode == DrawMode.AMBIENT
+        
         // Fondo negro — ahorra batería en modo AOD
         canvas.drawColor(Color.BLACK)
 
         val cx = bounds.exactCenterX()
         val cy = bounds.exactCenterY()
 
+        // Ajustar antiAlias para modo AOD (ahorro de batería)
+        paintHora.isAntiAlias = !inAmbientMode
+        paintSub.isAntiAlias = !inAmbientMode
+
         // Hora digital centrada
         val hora = String.format("%02d:%02d", zonedDateTime.hour, zonedDateTime.minute)
         val tw = paintHora.measureText(hora)
         canvas.drawText(hora, cx - tw / 2, cy - 10f, paintHora)
 
-        // Segundos (pequeño debajo)
-        val seg = String.format("%02d", zonedDateTime.second)
-        canvas.drawText(seg, cx - 18f, cy + 30f, paintSub)
+        // Solo dibujar extras en modo interactivo
+        if (!inAmbientMode) {
+            // Segundos (pequeño debajo)
+            val seg = String.format("%02d", zonedDateTime.second)
+            canvas.drawText(seg, cx - 18f, cy + 30f, paintSub)
 
-        // FC desde SmartHealthRepository
-        val fc = SmartHealthRepository.fc.value
-        if (fc > 0) {
-            val fcStr = "❤ $fc bpm"
-            val fcW = paintFC.measureText(fcStr)
-            canvas.drawText(fcStr, cx - fcW / 2, cy + 70f, paintFC)
+            // FC desde SmartHealthRepository
+            val fc = SmartHealthRepository.fc.value
+            if (fc > 0) {
+                val fcStr = "❤ $fc bpm"
+                val fcW = paintFC.measureText(fcStr)
+                canvas.drawText(fcStr, cx - fcW / 2, cy + 70f, paintFC)
+            }
         }
     }
 
