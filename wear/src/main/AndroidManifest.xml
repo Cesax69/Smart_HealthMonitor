@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-feature android:name="android.hardware.type.watch" />
+    <uses-feature android:name="com.google.android.wearable.watchface" android:required="false" />
 
     <uses-permission android:name="android.permission.BODY_SENSORS" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
@@ -42,9 +43,8 @@
         <service
             android:name=".watchface.SmartHealthWatchFaceService"
             android:exported="true"
-            android:label="SmartHealth Monitor"
-            android:permission="android.permission.BIND_WALLPAPER"
-            android:directBootAware="true">
+            android:label="!!! SmartHealth !!!"
+            android:permission="android.permission.BIND_WALLPAPER">
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
                 <category android:name="com.google.android.wearable.watchface.category.WATCH_FACE" />
@@ -58,6 +58,9 @@
             <meta-data
                 android:name="com.google.android.wearable.watchface.preview_circular"
                 android:resource="@drawable/preview_digital" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
+                android:value="mx.utng.smarthealthmonitor.wear.WATCH_FACE_CONFIG" />
         </service>
 
     </application>
