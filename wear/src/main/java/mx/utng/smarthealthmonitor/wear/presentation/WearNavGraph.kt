@@ -25,9 +25,11 @@ fun SmartHealthWearNavGraph() {
         composable(WearScreens.DASHBOARD) {
             WearDashboardScreen(
                 onAlertClick = {
+                    android.util.Log.d("SmartHealthNav", "Navigating to Alerta")
                     navController.navigate(WearScreens.ALERTA)
                 },
                 onHistoryClick = {
+                    android.util.Log.d("SmartHealthNav", "Navigating to Historial")
                     navController.navigate(WearScreens.HISTORIAL)
                 }
             )

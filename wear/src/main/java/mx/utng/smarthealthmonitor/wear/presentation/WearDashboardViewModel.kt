@@ -3,6 +3,7 @@ package mx.utng.smarthealthmonitor.wear.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
+import mx.utng.smarthealthmonitor.shared.data.LecturaFC
 import mx.utng.smarthealthmonitor.shared.data.SmartHealthRepository
 
 class WearDashboardViewModel : ViewModel() {
@@ -25,7 +26,7 @@ class WearDashboardViewModel : ViewModel() {
         )
 
     // Historial de lecturas desde el módulo shared
-    val historial = SmartHealthRepository.historial
+    val historial: StateFlow<List<LecturaFC>> = SmartHealthRepository.historial
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
