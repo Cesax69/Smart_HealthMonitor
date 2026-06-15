@@ -30,27 +30,20 @@ fun WearHistorialScreen(
     val listState = rememberScalingLazyListState()
     val focusRequester = remember { FocusRequester() }
 
-    // Pedir foco para recibir eventos de la corona
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
 
     Scaffold(
-        timeText = {
-            TimeText(modifier = Modifier.scrollAway(listState))
-        },
-        positionIndicator = {
-            PositionIndicator(scalingLazyListState = listState)
-        }
+        timeText = { TimeText() },
+        positionIndicator = { PositionIndicator(scalingLazyListState = listState) }
     ) {
         ScalingLazyColumn(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                .rotaryScrollable( // ← conecta la corona
-                    behavior = RotaryScrollableDefaults.behavior(
-                        scrollableState = listState
-                    ),
+                .rotaryScrollable(
+                    behavior = RotaryScrollableDefaults.behavior(scrollableState = listState),
                     focusRequester = focusRequester
                 )
                 .focusRequester(focusRequester)
@@ -59,21 +52,27 @@ fun WearHistorialScreen(
                 Text(
                     text = "Historial (${historial.size})",
                     style = MaterialTheme.typography.title3,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
 
             if (historial.isEmpty()) {
                 item {
-                    Text(
-                        text = "Sin lecturas aún",
-                        style = MaterialTheme.typography.body2,
-                        modifier = Modifier.padding(8.dp)
-                    )
+                    Text("Sin lecturas", style = MaterialTheme.typography.body2)
                 }
             } else {
-                items(historial, key = { it.id }) { lectura ->
+                items(historial) { lectura ->
                     WearFilaHistorial(lectura = lectura)
+                }
+            }
+            
+            item {
+                Button(
+                    onClick = onBack,
+                    colors = ButtonDefaults.secondaryButtonColors(),
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Text("Volver")
                 }
             }
         }
@@ -82,21 +81,13 @@ fun WearHistorialScreen(
 
 @Composable
 fun WearFilaHistorial(lectura: LecturaFC) {
-    val color = if (lectura.esNormal)
-        MaterialTheme.colors.primary
-    else
-        MaterialTheme.colors.error
-
+    val color = if (lectura.esNormal) MaterialTheme.colors.primary else MaterialTheme.colors.error
+    
     Chip(
-        label = { 
-            Text(
-                text = "${lectura.valorBpm} bpm",
-                color = color
-            ) 
-        },
+        label = { Text("${lectura.valorBpm} bpm", color = color) },
         secondaryLabel = { Text(lectura.hora) },
         onClick = { },
         colors = ChipDefaults.secondaryChipColors(),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
     )
 }

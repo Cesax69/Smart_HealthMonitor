@@ -9,9 +9,9 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 
 object WearScreens {
-    const val DASHBOARD = "wear_dashboard"
-    const val ALERTA    = "wear_alerta"
-    const val HISTORIAL = "wear_historial"
+    const val DASHBOARD = "dashboard"
+    const val ALERTA    = "alerta"
+    const val HISTORIAL = "historial"
 }
 
 @Composable
@@ -19,31 +19,31 @@ fun SmartHealthWearNavGraph() {
     val navController = rememberSwipeDismissableNavController()
 
     SwipeDismissableNavHost(
-        navController    = navController,
+        navController = navController,
         startDestination = WearScreens.DASHBOARD
     ) {
-        composable(WearScreens.DASHBOARD) {
+        composable(route = WearScreens.DASHBOARD) {
             WearDashboardScreen(
                 onAlertClick = {
-                    android.util.Log.d("SmartHealthNav", "Navigating to Alerta")
                     navController.navigate(WearScreens.ALERTA)
                 },
                 onHistoryClick = {
-                    android.util.Log.d("SmartHealthNav", "Navigating to Historial")
                     navController.navigate(WearScreens.HISTORIAL)
                 }
             )
         }
-        composable(WearScreens.ALERTA) {
+        
+        composable(route = WearScreens.ALERTA) {
             val vm: WearDashboardViewModel = viewModel()
             val fc by vm.fc.collectAsState()
             WearAlertaScreen(
-                fc          = fc,
+                fc = fc,
                 onConfirmar = { navController.popBackStack() },
-                onCancelar  = { navController.popBackStack() }
+                onCancelar = { navController.popBackStack() }
             )
         }
-        composable(WearScreens.HISTORIAL) {
+
+        composable(route = WearScreens.HISTORIAL) {
             WearHistorialScreen(
                 onBack = { navController.popBackStack() }
             )
