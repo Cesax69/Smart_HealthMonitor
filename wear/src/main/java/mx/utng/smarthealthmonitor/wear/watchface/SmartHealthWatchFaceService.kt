@@ -10,6 +10,10 @@ import androidx.wear.watchface.style.CurrentUserStyleRepository
 
 class SmartHealthWatchFaceService : WatchFaceService() {
 
+    init {
+        android.util.Log.d("SmartHealthWF", "WatchFace: Servicio Inicializado en Memoria")
+    }
+
     override suspend fun createWatchFace(
         surfaceHolder: SurfaceHolder,
         watchState: WatchState,
