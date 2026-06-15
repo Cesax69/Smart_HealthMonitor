@@ -67,6 +67,11 @@ dependencies {
     implementation("com.google.android.gms:play-services-wearable:18.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
+    // Jetpack WatchFace API
+    implementation("androidx.wear.watchface:watchface:1.2.1")
+    implementation("androidx.wear.watchface:watchface-complications-rendering:1.2.1")
+    implementation("androidx.wear.watchface:watchface-style:1.2.1")
+
     // Módulo Compartido
     implementation(project(":shared"))
 }
