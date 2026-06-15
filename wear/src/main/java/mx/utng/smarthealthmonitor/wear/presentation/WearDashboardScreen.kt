@@ -15,6 +15,7 @@ import mx.utng.smarthealthmonitor.wear.presentation.components.WearFCCard
 @Composable
 fun WearDashboardScreen(
     onAlertClick: () -> Unit = {},
+    onHistoryClick: () -> Unit = {},
     viewModel: WearDashboardViewModel = viewModel()
 ) {
     val fc by viewModel.fc.collectAsState()
@@ -55,7 +56,17 @@ fun WearDashboardScreen(
                 )
             }
 
-            // Item 3: Chip de Alerta (Ejercicio Principal)
+            // Item 3: Chip de Historial (Nuevo en Sesión 10)
+            item {
+                Chip(
+                    label = { Text("🕒 Historial") },
+                    onClick = onHistoryClick,
+                    colors = ChipDefaults.secondaryChipColors(),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // Item 4: Chip de Alerta (Ejercicio Principal)
             item {
                 Chip(
                     label = { Text("⚠ Alerta") },

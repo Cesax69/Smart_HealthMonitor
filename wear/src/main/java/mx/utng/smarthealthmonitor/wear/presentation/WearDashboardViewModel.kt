@@ -23,4 +23,12 @@ class WearDashboardViewModel : ViewModel() {
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = 0
         )
+
+    // Historial de lecturas desde el módulo shared
+    val historial = SmartHealthRepository.historial
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 }
