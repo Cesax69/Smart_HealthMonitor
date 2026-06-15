@@ -2,11 +2,14 @@ package mx.utng.smarthealthmonitor.wear.presentation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.wear.compose.foundation.lazy.AutoCenteringParams
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.*
@@ -14,8 +17,8 @@ import mx.utng.smarthealthmonitor.wear.presentation.components.WearFCCard
 
 @Composable
 fun WearDashboardScreen(
-    onAlertClick: () -> Unit = {},
-    onHistoryClick: () -> Unit = {},
+    onAlertClick: () -> Unit,
+    onHistoryClick: () -> Unit,
     viewModel: WearDashboardViewModel = viewModel()
 ) {
     val fc by viewModel.fc.collectAsState()
@@ -32,41 +35,43 @@ fun WearDashboardScreen(
     ) {
         ScalingLazyColumn(
             state = listState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            autoCentering = AutoCenteringParams(itemIndex = 0)
         ) {
-            // Item 1: Card de FC (Ejercicio Principal)
+            // Item 1: Card de FC
             item {
                 WearFCCard(
                     fc = fc,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
                 )
             }
 
-            // Item 2: CompactChip de Pasos (Reto Adicional)
+            // Item 2: CompactChip de Pasos
             item {
                 CompactChip(
                     label = { 
-                        Text(
-                            text = if (pasos == 0) "-- pasos" else "$pasos pasos"
-                        ) 
+                        Text(text = if (pasos == 0) "-- pasos" else "$pasos pasos") 
                     },
-                    onClick = { /* Navegar a pasos si fuera necesario */ },
+                    onClick = { /* Opcional */ },
                     colors = ChipDefaults.secondaryChipColors(),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                 )
             }
 
-            // Item 3: Chip de Historial (Nuevo en Sesión 10)
+            // Item 3: Chip de Historial
             item {
                 Chip(
                     label = { Text("🕒 Historial") },
-                    onClick = onHistoryClick,
+                    onClick = {
+                        android.util.Log.d("SmartHealthNav", "Click on Historial Chip")
+                        onHistoryClick()
+                    },
                     colors = ChipDefaults.secondaryChipColors(),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                 )
             }
 
-            // Item 4: Chip de Alerta (Ejercicio Principal)
+            // Item 4: Chip de Alerta
             item {
                 Chip(
                     label = { Text("⚠ Alerta") },
@@ -74,7 +79,7 @@ fun WearDashboardScreen(
                     colors = ChipDefaults.primaryChipColors(
                         backgroundColor = MaterialTheme.colors.error
                     ),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                 )
             }
         }
