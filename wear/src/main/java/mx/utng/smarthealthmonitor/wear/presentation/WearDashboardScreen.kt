@@ -38,7 +38,22 @@ fun WearDashboardScreen(
             modifier = Modifier.fillMaxSize(),
             autoCentering = AutoCenteringParams(itemIndex = 0)
         ) {
-            // Item 1: Card de FC
+            // MOVIDO AL PRINCIPIO PARA TEST: Botón de Historial
+            item {
+                Chip(
+                    label = { Text("🕒 VER HISTORIAL") },
+                    onClick = {
+                        android.util.Log.d("SmartHealthNav", "BOTON HISTORIAL PRESIONADO")
+                        onHistoryClick()
+                    },
+                    colors = ChipDefaults.primaryChipColors(
+                        backgroundColor = MaterialTheme.colors.secondary
+                    ),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                )
+            }
+
+            // Item: Card de FC
             item {
                 WearFCCard(
                     fc = fc,
@@ -46,7 +61,7 @@ fun WearDashboardScreen(
                 )
             }
 
-            // Item 2: CompactChip de Pasos
+            // Item: CompactChip de Pasos
             item {
                 CompactChip(
                     label = { 
@@ -54,28 +69,18 @@ fun WearDashboardScreen(
                     },
                     onClick = { /* Opcional */ },
                     colors = ChipDefaults.secondaryChipColors(),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)
                 )
             }
 
-            // Item 3: Chip de Historial
-            item {
-                Chip(
-                    label = { Text("🕒 Historial") },
-                    onClick = {
-                        android.util.Log.d("SmartHealthNav", "Click on Historial Chip")
-                        onHistoryClick()
-                    },
-                    colors = ChipDefaults.secondaryChipColors(),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-                )
-            }
-
-            // Item 4: Chip de Alerta
+            // Item: Chip de Alerta
             item {
                 Chip(
                     label = { Text("⚠ Alerta") },
-                    onClick = onAlertClick,
+                    onClick = {
+                        android.util.Log.d("SmartHealthNav", "BOTON ALERTA PRESIONADO")
+                        onAlertClick()
+                    },
                     colors = ChipDefaults.primaryChipColors(
                         backgroundColor = MaterialTheme.colors.error
                     ),
