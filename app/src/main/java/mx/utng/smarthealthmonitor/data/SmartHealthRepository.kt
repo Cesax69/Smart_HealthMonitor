@@ -1,39 +1,38 @@
 ﻿package mx.utng.smarthealthmonitor.data
 
+import android.content.Context
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import mx.utng.smarthealthmonitor.data.db.LecturaFCDao
-import mx.utng.smarthealthmonitor.data.db.SmartHealthDB
 import mx.utng.smarthealthmonitor.shared.data.LecturaFC
+import mx.utng.smarthealthmonitor.shared.data.db.LecturaFCDao
+import mx.utng.smarthealthmonitor.shared.data.db.SmartHealthDB
 import mx.utng.smarthealthmonitor.shared.data.SmartHealthRepository as SharedRepo
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 object SmartHealthRepository {
-    private val dao: LecturaFCDao by lazy { SmartHealthDB.obtenerInstancia().lecturaDao() }
+    private var _dao: LecturaFCDao? = null
+    
+    fun init(context: Context) {
+        if (_dao == null) {
+            _dao = SmartHealthDB.getDatabase(context).lecturaDao()
+        }
+    }
+
+    private val dao: LecturaFCDao 
+        get() = _dao ?: throw IllegalStateException("Repository not initialized. Call init(context) first.")
     
     val fcFlow = SharedRepo.fc
     val pasosFlow = SharedRepo.pasos
     val spo2Flow = SharedRepo.spo2
 
     fun obtenerHistorial(): Flow<List<LecturaFC>> {
-        return dao.getAll().map { listaEntities ->
-            listaEntities.map { entity ->
-                LecturaFC(
-                    id = entity.id,
-                    valorBpm = entity.valorBpm,
-                    timestamp = entity.timestamp,
-                    hora = entity.hora,
-                    esNormal = entity.esNormal
-                )
-            }
-        }
+        return dao.getAll()
     }
 
     suspend fun actualizarFC(bpm: Int) {
         SharedRepo.actualizarFC(bpm)
-        val lectura = mx.utng.smarthealthmonitor.data.db.LecturaFC(
+        val lectura = LecturaFC(
             valorBpm = bpm,
             timestamp = System.currentTimeMillis(),
             hora = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()),

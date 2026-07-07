@@ -23,4 +23,8 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    
+    // Room components for Shared Module
+    api(libs.androidx.room.runtime)
+    api(libs.androidx.room.ktx)
 }

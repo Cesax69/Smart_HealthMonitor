@@ -9,7 +9,7 @@ android {
     compileSdk = 35
     defaultConfig {
         applicationId = "mx.utng.smarthealthmonitor.tv"
-        minSdk = 21
+        minSdk = 26 // Increased from 21 to match :shared
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -38,13 +38,16 @@ dependencies {
     implementation("androidx.leanback:leanback:1.2.0")
     // Glide para cargar imágenes en las cards
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    // Compartir Room + Repository con módulo app
-    implementation(project(":app"))
+    // Compartir Room + Repository con módulo shared (preferable over :app)
+    implementation(project(":shared"))
     // ViewModel + Coroutines
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     
-    // Transitive dependencies from app that might be needed
+    // Transitive dependencies
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.core:core-ktx:1.10.1")
+    
+    // KSP for Room (even if using :shared, sometimes needed for compilation of DAOs)
+    ksp(libs.androidx.room.compiler)
 }
