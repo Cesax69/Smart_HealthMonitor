@@ -1,7 +1,7 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.devtools.ksp)
 }
 
 android {
@@ -9,7 +9,7 @@ android {
     compileSdk = 35
     defaultConfig {
         applicationId = "mx.utng.smarthealthmonitor.tv"
-        minSdk = 26 // Increased from 21 to match :shared
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -34,23 +34,24 @@ android {
 }
 
 dependencies {
-    // Leanback Library — el estándar de Android TV
+    // Leanback Library
     implementation("androidx.leanback:leanback:1.2.0")
-    // Glide para cargar imágenes en las cards
+    // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    // Compartir Room + Repository con módulo shared (preferable over :app)
+    // Shared Module
     implementation(project(":shared"))
-    // ViewModel + Coroutines
+    
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     
     // Fragment KTX for viewModels()
     implementation("androidx.fragment:fragment-ktx:1.8.0")
     
     // Transitive dependencies
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.core:core-ktx:1.10.1")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core.ktx)
     
-    // KSP for Room (even if using :shared, sometimes needed for compilation of DAOs)
+    // Room Compiler
     ksp(libs.androidx.room.compiler)
 }
