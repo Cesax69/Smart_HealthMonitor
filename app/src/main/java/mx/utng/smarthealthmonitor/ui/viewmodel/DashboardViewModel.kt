@@ -3,7 +3,7 @@ package mx.utng.smarthealthmonitor.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
-import mx.utng.smarthealthmonitor.data.SmartHealthRepository
+import mx.utng.smarthealthmonitor.shared.data.repository.SmartHealthRepository
 import mx.utng.smarthealthmonitor.shared.MockData
 import mx.utng.smarthealthmonitor.shared.data.LecturaFC
 
