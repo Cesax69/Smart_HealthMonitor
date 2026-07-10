@@ -57,6 +57,13 @@ class MainFragment : BrowseSupportFragment() {
         }
         rowsAdapter.add(ListRow(HeaderItem(1, "Historial FC"), histAdapter))
 
+        // ── Fila 3: Alertas recientes (Reto Adicional) ────
+        val alertaAdapter = ArrayObjectAdapter(FCCardPresenter())
+        alertaAdapter.add(LecturaFC(id=101, valorBpm=120, timestamp=0L, hora="14:30", esNormal=false))
+        alertaAdapter.add(LecturaFC(id=102, valorBpm=135, timestamp=0L, hora="16:45", esNormal=false))
+        alertaAdapter.add(LecturaFC(id=103, valorBpm=118, timestamp=0L, hora="19:00", esNormal=false))
+        rowsAdapter.add(ListRow(HeaderItem(2, "Alertas recientes"), alertaAdapter))
+
         this.adapter = rowsAdapter
     }
 }
