@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.devtools.ksp)
 }
 
 android {
@@ -27,4 +28,5 @@ dependencies {
     // Room components for Shared Module
     api(libs.androidx.room.runtime)
     api(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 }
