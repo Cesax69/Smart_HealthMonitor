@@ -11,4 +11,8 @@ data class LecturaFC(
     val timestamp: Long,
     val hora: String,
     val esNormal: Boolean
-)
+) {
+    // Propiedades calculadas para facilitar el uso en UI de TV
+    val bpm: Int get() = valorBpm
+    val estado: String get() = if (esNormal) "Normal" else "Elevada"
+}
