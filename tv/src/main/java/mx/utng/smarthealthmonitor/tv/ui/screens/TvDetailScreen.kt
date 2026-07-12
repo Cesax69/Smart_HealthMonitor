@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.tv.material3.*
+import mx.utng.smarthealthmonitor.shared.data.LecturaFC
 import mx.utng.smarthealthmonitor.tv.TvViewModel
 import mx.utng.smarthealthmonitor.tv.TvViewModelFactory
 
@@ -29,7 +30,10 @@ fun TvDetailScreen(
     viewModel: TvViewModel = viewModel(factory = TvViewModelFactory(LocalContext.current))
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val lectura = state.lecturas.find { it.id == lecturaId } ?: return
+    
+    // Buscar lectura real o usar una falsa para la prueba
+    val lectura = state.lecturas.find { it.id == lecturaId } 
+        ?: LecturaFC(id=999, valorBpm=72, timestamp=0L, hora="10:00 AM", esNormal=true)
 
     // FocusRequester para mover el foco al primer botón al entrar
     val firstBtnFocus = remember { FocusRequester() }
