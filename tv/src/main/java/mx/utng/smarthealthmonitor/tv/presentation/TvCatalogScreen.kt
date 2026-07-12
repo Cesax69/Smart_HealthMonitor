@@ -1,4 +1,4 @@
-package mx.utng.smarthealthmonitor.tv.ui.screens
+package mx.utng.smarthealthmonitor.tv.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -32,14 +32,10 @@ fun TvCatalogScreen(onCardClick: (Int) -> Unit, viewModel: TvViewModel = viewMod
             Spacer(modifier = Modifier.height(32.dp))
             
             if (state.lecturas.isEmpty()) {
-                // BOTÓN DE EMERGENCIA PARA EVIDENCIA
                 Button(onClick = { onCardClick(999) }) {
                     Text("Abrir Registro de Prueba (999)")
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("Room está vacío, usando datos de simulación", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             } else {
-                // Si hay datos, mostramos el primero
                 Button(onClick = { onCardClick(state.lecturas.first().id) }) {
                     Text("Ver Detalle: ${state.lecturas.first().bpm} bpm")
                 }
