@@ -42,6 +42,12 @@
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="mx.utng.smarthealthmonitor.cast.CastOptionsProvider" />
+
+        <!-- Actividad necesaria para mostrar el diálogo de Cast sin que la app se cierre -->
+        <activity
+            android:name="com.google.android.gms.cast.framework.media.widget.ExpandedControllerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 
 </manifest>
