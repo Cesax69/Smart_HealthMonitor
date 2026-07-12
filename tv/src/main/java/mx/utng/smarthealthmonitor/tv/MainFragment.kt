@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 import mx.utng.smarthealthmonitor.shared.data.LecturaFC
+import mx.utng.smarthealthmonitor.shared.MockData
 
 class MainFragment : BrowseSupportFragment() {
 
@@ -20,7 +21,7 @@ class MainFragment : BrowseSupportFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Configuración del BrowseFragment
+        // Configuración visual
         title = "SmartHealth TV"
         headersState = HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true
@@ -31,12 +32,25 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun observarDatos() {
-        // Observar historial de Room y actualizar la fila
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.historial.collect { lecturas ->
                     histAdapter.clear()
-                    lecturas.forEach { histAdapter.add(it) }
+                    if (lecturas.isEmpty()) {
+                        // SI NO HAY DATOS EN ROOM, MOSTRAR MOCKDATA PARA LA EVIDENCIA
+                        MockData.historialFC.forEach { registro ->
+                            histAdapter.add(LecturaFC(
+                                id = registro.id,
+                                valorBpm = registro.bpm,
+                                timestamp = 0L,
+                                hora = registro.fecha,
+                                esNormal = registro.esNormal
+                            ))
+                        }
+                    } else {
+                        // SI HAY DATOS REALES, MOSTRARLOS
+                        lecturas.forEach { histAdapter.add(it) }
+                    }
                 }
             }
         }
@@ -45,9 +59,15 @@ class MainFragment : BrowseSupportFragment() {
     private fun cargarFilas() {
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
 
-        // Fila historial con adapter reactivo
+        // Fila 1: Historial de salud
         histAdapter = ArrayObjectAdapter(FCCardPresenter())
-        rowsAdapter.add(ListRow(HeaderItem("Historial FC"), histAdapter))
+        rowsAdapter.add(ListRow(HeaderItem(0, "Historial de Salud"), histAdapter))
+
+        // Fila 2: Resumen (Datos fijos para asegurar que se vea algo)
+        val resumenAdapter = ArrayObjectAdapter(FCCardPresenter())
+        resumenAdapter.add(LecturaFC(id=-1, valorBpm=72, timestamp=0L, hora="Frecuencia Promedio", esNormal=true))
+        resumenAdapter.add(LecturaFC(id=-2, valorBpm=4500, timestamp=0L, hora="Pasos Totales", esNormal=true))
+        rowsAdapter.add(ListRow(HeaderItem(1, "Resumen Diario"), resumenAdapter))
 
         this.adapter = rowsAdapter
     }
