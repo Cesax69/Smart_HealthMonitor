@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.mediarouter.app.MediaRouteButton
 import com.google.android.gms.cast.framework.CastButtonFactory
@@ -30,11 +31,16 @@ fun DashboardTopBar(title: String) {
     TopAppBar(
         title = { Text(title) },
         actions = {
-            // CastButton: AndroidView que envuelve MediaRouteButton
+            // CastButton: AndroidView que envuelve MediaRouteButton de forma segura
             AndroidView(
                 factory = { context ->
-                    MediaRouteButton(context).apply {
-                        CastButtonFactory.setUpMediaRouteButton(context, this)
+                    try {
+                        MediaRouteButton(context).apply {
+                            CastButtonFactory.setUpMediaRouteButton(context, this)
+                        }
+                    } catch (e: Exception) {
+                        // En caso de error (dispositivo sin Play Services), devolvemos un Spacer
+                        android.widget.Space(context)
                     }
                 },
                 modifier = Modifier.size(48.dp)
@@ -50,10 +56,10 @@ fun DashboardScreen(
     onAlertClick: () -> Unit = {}, 
     viewModel: DashboardViewModel = viewModel()
 ) {
-    val fc by viewModel.fc.collectAsState()
-    val pasos by viewModel.pasos.collectAsState()
-    val spo2 by viewModel.spo2.collectAsState()
-    val historial by viewModel.historial.collectAsState()
+    val fc by viewModel.fc.collectAsStateWithLifecycle()
+    val pasos by viewModel.pasos.collectAsStateWithLifecycle()
+    val spo2 by viewModel.spo2.collectAsStateWithLifecycle()
+    val historial by viewModel.historial.collectAsStateWithLifecycle()
     
     // ── Estado del diálogo y Snackbar ──────────────────────
     var mostrarAlerta by remember { mutableStateOf(false) }

@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import mx.utng.smarthealthmonitor.shared.data.LecturaFC
 import mx.utng.smarthealthmonitor.ui.theme.SmartHealthMonitorTheme
@@ -28,7 +29,7 @@ fun HistorialScreen(
     onBack: () -> Unit,
     viewModel: DashboardViewModel = viewModel()
 ) {
-    val lecturas by viewModel.historial.collectAsState()
+    val lecturas by viewModel.historial.collectAsStateWithLifecycle()
     
     SmartHealthMonitorTheme {
         Scaffold(
