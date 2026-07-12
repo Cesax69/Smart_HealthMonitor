@@ -31,21 +31,25 @@ fun DashboardTopBar(title: String) {
     TopAppBar(
         title = { Text(title) },
         actions = {
-            // CastButton: AndroidView que envuelve MediaRouteButton de forma segura
-            AndroidView(
-                factory = { context ->
-                    try {
+            // CastButton: AndroidView que envuelve MediaRouteButton
+            // Añadimos un Box para asegurar que ocupe espacio y sea visible
+            Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
+                AndroidView(
+                    factory = { context ->
                         MediaRouteButton(context).apply {
+                            // Configuramos el botón con el framework de Cast
                             CastButtonFactory.setUpMediaRouteButton(context, this)
                         }
-                    } catch (e: Exception) {
-                        // En caso de error (dispositivo sin Play Services), devolvemos un Spacer
-                        android.widget.Space(context)
-                    }
-                },
-                modifier = Modifier.size(48.dp)
-            )
-        }
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            actionIconContentColor = MaterialTheme.colorScheme.onSurface
+        )
     )
 }
 
