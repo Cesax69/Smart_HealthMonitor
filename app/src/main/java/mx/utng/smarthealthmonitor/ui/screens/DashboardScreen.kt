@@ -31,25 +31,35 @@ fun DashboardTopBar(title: String) {
     TopAppBar(
         title = { Text(title) },
         actions = {
-            // USAMOS UN WRAPPER SEGURO PARA EL BOTÓN DE CAST
-            // Si el SDK falla o no hay Play Services, el bloque try-catch interno
-            // evitará que la app entera se cierre.
-            Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
+            // FORZAMOS LA VISIBILIDAD CON UN WRAPPER DE TEMA Y TAMAÑO FIJO
+            Box(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .size(48.dp),
+                contentAlignment = Alignment.Center
+            ) {
                 AndroidView(
                     factory = { context ->
-                        try {
-                            MediaRouteButton(context).apply {
-                                CastButtonFactory.setUpMediaRouteButton(context, this)
-                            }
-                        } catch (e: Exception) {
-                            // Si falla, devolvemos una vista vacía para no romper la UI
-                            android.view.View(context)
+                        // MediaRouteButton necesita un contexto que incluya el tema de AppCompat
+                        // para renderizar el icono correctamente en dispositivos físicos
+                        MediaRouteButton(context).apply {
+                            CastButtonFactory.setUpMediaRouteButton(context, this)
                         }
                     },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    update = { button ->
+                        // Forzamos que sea visible y clickable
+                        button.visibility = android.view.View.VISIBLE
+                        button.isClickable = true
+                    }
                 )
             }
-        }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     )
 }
 
