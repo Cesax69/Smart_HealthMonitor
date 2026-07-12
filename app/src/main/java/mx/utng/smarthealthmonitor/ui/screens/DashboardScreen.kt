@@ -15,12 +15,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.mediarouter.app.MediaRouteButton
+import com.google.android.gms.cast.framework.CastButtonFactory
 import kotlinx.coroutines.launch
-import mx.utng.smarthealthmonitor.data.SmartHealthRepository
+import mx.utng.smarthealthmonitor.shared.data.repository.SmartHealthRepository
 import mx.utng.smarthealthmonitor.ui.theme.SmartHealthMonitorTheme
 import mx.utng.smarthealthmonitor.ui.viewmodel.DashboardViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DashboardTopBar(title: String) {
+    TopAppBar(
+        title = { Text(title) },
+        actions = {
+            // CastButton: AndroidView que envuelve MediaRouteButton
+            AndroidView(
+                factory = { context ->
+                    MediaRouteButton(context).apply {
+                        CastButtonFactory.setUpMediaRouteButton(context, this)
+                    }
+                },
+                modifier = Modifier.size(48.dp)
+            )
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
     onHistorialClick: () -> Unit = {},
@@ -61,6 +84,7 @@ fun DashboardScreen(
 
     SmartHealthMonitorTheme {
         Scaffold(
+            topBar = { DashboardTopBar("SmartHealth Dashboard") },
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             floatingActionButton = {
                 FloatingActionButton(
@@ -81,14 +105,6 @@ fun DashboardScreen(
                     .padding(padding)
                     .padding(16.dp)
             ) {
-                Text(
-                    text = "Dashboard de Monitoreo",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                
-                Spacer(modifier = Modifier.height(24.dp))
-
                 // Fila de Indicadores Principales
                 Row(
                     modifier = Modifier.fillMaxWidth(),
