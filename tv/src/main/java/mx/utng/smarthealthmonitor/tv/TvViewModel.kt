@@ -10,18 +10,13 @@ class TvViewModel : ViewModel() {
 
     // FC actual del wearable (o 0 si no hay dato)
     val fc: StateFlow<Int> = SmartHealthRepository.fcFlow
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 0
-        )
+        .stateIn(viewModelScope,
+                 SharingStarted.WhileSubscribed(5_000), 0)
 
-    // Historial de lecturas desde Room DAO (vía Repository)
+    // Historial de lecturas desde Room DAO
     val historial: StateFlow<List<LecturaFC>> =
         SmartHealthRepository.obtenerHistorial()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = emptyList()
-            )
+            .stateIn(viewModelScope,
+                     SharingStarted.WhileSubscribed(5_000),
+                     emptyList())
 }
