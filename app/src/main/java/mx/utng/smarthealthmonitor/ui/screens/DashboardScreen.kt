@@ -31,25 +31,25 @@ fun DashboardTopBar(title: String) {
     TopAppBar(
         title = { Text(title) },
         actions = {
-            // CastButton: AndroidView que envuelve MediaRouteButton
-            // Añadimos un Box para asegurar que ocupe espacio y sea visible
+            // USAMOS UN WRAPPER SEGURO PARA EL BOTÓN DE CAST
+            // Si el SDK falla o no hay Play Services, el bloque try-catch interno
+            // evitará que la app entera se cierre.
             Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
                 AndroidView(
                     factory = { context ->
-                        MediaRouteButton(context).apply {
-                            // Configuramos el botón con el framework de Cast
-                            CastButtonFactory.setUpMediaRouteButton(context, this)
+                        try {
+                            MediaRouteButton(context).apply {
+                                CastButtonFactory.setUpMediaRouteButton(context, this)
+                            }
+                        } catch (e: Exception) {
+                            // Si falla, devolvemos una vista vacía para no romper la UI
+                            android.view.View(context)
                         }
                     },
                     modifier = Modifier.fillMaxSize()
                 )
             }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            actionIconContentColor = MaterialTheme.colorScheme.onSurface
-        )
+        }
     )
 }
 
@@ -65,12 +65,10 @@ fun DashboardScreen(
     val spo2 by viewModel.spo2.collectAsStateWithLifecycle()
     val historial by viewModel.historial.collectAsStateWithLifecycle()
     
-    // ── Estado del diálogo y Snackbar ──────────────────────
     var mostrarAlerta by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    // ── Diálogo condicional ────────────────────────────────
     if (mostrarAlerta) {
         AlertaScreen(
             fc = fc,
@@ -78,15 +76,10 @@ fun DashboardScreen(
             onConfirmar = { nota ->
                 mostrarAlerta = false
                 scope.launch {
-                    val result = snackbarHostState.showSnackbar(
+                    snackbarHostState.showSnackbar(
                         message = if (nota.isBlank()) "✅ Alerta enviada" else "✅ Alerta: $nota",
-                        actionLabel = "Deshacer",
                         duration = SnackbarDuration.Long
                     )
-                    
-                    if (result == SnackbarResult.ActionPerformed) {
-                        snackbarHostState.showSnackbar("Alerta cancelada")
-                    }
                 }
             }
         )
@@ -103,7 +96,7 @@ fun DashboardScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Warning,
-                        contentDescription = "Enviar alerta de emergencia",
+                        contentDescription = "Alerta",
                         tint = MaterialTheme.colorScheme.onError
                     )
                 }
@@ -115,91 +108,49 @@ fun DashboardScreen(
                     .padding(padding)
                     .padding(16.dp)
             ) {
-                // Fila de Indicadores Principales
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    TarjetaDato(
-                        titulo = "Ritmo",
-                        valor = "$fc",
-                        unidad = "bpm",
-                        icono = Icons.Default.Favorite,
-                        colorIcono = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.weight(1f)
-                    )
-                    TarjetaDato(
-                        titulo = "Oxígeno",
-                        valor = "$spo2",
-                        unidad = "%",
-                        icono = Icons.Default.Opacity,
-                        colorIcono = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.weight(1f)
-                    )
+                    TarjetaDato("Ritmo", "$fc", "bpm", Icons.Default.Favorite, MaterialTheme.colorScheme.error, Modifier.weight(1f))
+                    TarjetaDato("Oxígeno", "$spo2", "%", Icons.Default.Opacity, MaterialTheme.colorScheme.tertiary, Modifier.weight(1f))
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
-                TarjetaDato(
-                    titulo = "Actividad Física",
-                    valor = "%,d".format(pasos),
-                    unidad = "pasos hoy",
-                    icono = Icons.Default.DirectionsWalk,
-                    colorIcono = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                TarjetaDato("Actividad Física", "%,d".format(pasos), "pasos hoy", Icons.Default.DirectionsWalk, MaterialTheme.colorScheme.primary, Modifier.fillMaxWidth())
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(Modifier.height(24.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Historial Reciente",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    TextButton(onClick = onHistorialClick) {
-                        Text("Ver todo")
-                    }
+                Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+                    Text("Historial Reciente", style = MaterialTheme.typography.titleLarge)
+                    TextButton(onClick = onHistorialClick) { Text("Ver todo") }
                 }
 
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                    )
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))) {
+                    Column(Modifier.padding(16.dp)) {
                         historial.take(3).forEach { registro ->
-                            Text(
-                                text = "• ${registro.valorBpm} bpm - ${registro.hora}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.padding(vertical = 4.dp)
-                            )
+                            Text("• ${registro.valorBpm} bpm - ${registro.hora}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp))
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(Modifier.height(24.dp))
 
-                // Botón de simulación
                 OutlinedButton(
                     onClick = {
                         scope.launch {
-                            val fcSimulado = (60..110).random()
-                            val pasosSimulados = (3000..8000).random()
-                            val spo2Simulado = (95..100).random()
-                            
-                            SmartHealthRepository.actualizarFC(fcSimulado)
-                            SmartHealthRepository.actualizarPasos(pasosSimulados)
-                            SmartHealthRepository.actualizarSpO2(spo2Simulado)
+                            val fcSim = (60..110).random()
+                            val pasSim = (3000..8000).random()
+                            val spoSim = (95..100).random()
+                            SmartHealthRepository.actualizarFC(fcSim)
+                            SmartHealthRepository.actualizarPasos(pasSim)
+                            SmartHealthRepository.actualizarSpO2(spoSim)
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Simular dato del wearable (PRUEBA)")
+                    Text("Simular dato del wearable")
                 }
             }
         }
@@ -207,43 +158,16 @@ fun DashboardScreen(
 }
 
 @Composable
-fun TarjetaDato(
-    titulo: String,
-    valor: String,
-    unidad: String,
-    icono: ImageVector,
-    colorIcono: androidx.compose.ui.graphics.Color,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Icon(
-                imageVector = icono,
-                contentDescription = null,
-                tint = colorIcono,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = titulo, style = MaterialTheme.typography.labelMedium)
+fun TarjetaDato(titulo: String, valor: String, unidad: String, icono: ImageVector, colorIcono: androidx.compose.ui.graphics.Color, modifier: Modifier = Modifier) {
+    Card(modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
+        Column(Modifier.padding(16.dp), horizontalAlignment = Alignment.Start) {
+            Icon(imageVector = icono, contentDescription = null, tint = colorIcono, modifier = Modifier.size(24.dp))
+            Spacer(Modifier.height(8.dp))
+            Text(titulo, style = MaterialTheme.typography.labelMedium)
             Row(verticalAlignment = Alignment.Bottom) {
-                Text(
-                    text = valor,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorIcono
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = unidad,
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
+                Text(valor, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = colorIcono)
+                Spacer(Modifier.width(4.dp))
+                Text(unidad, style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(bottom = 4.dp))
             }
         }
     }
@@ -252,7 +176,5 @@ fun TarjetaDato(
 @Preview(showBackground = true)
 @Composable
 fun DashboardPreview() {
-    SmartHealthMonitorTheme {
-        DashboardScreen()
-    }
+    SmartHealthMonitorTheme { DashboardScreen() }
 }
