@@ -48,6 +48,10 @@ dependencies {
     // Navigation Compose
     implementation("androidx.navigation:navigation-compose:2.8.0")
 
+    // Media3 ExoPlayer
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+    implementation("androidx.media3:media3-ui:1.3.1")
+
     // Leanback Library (Keeping for transition if needed, though session focuses on Compose)
     implementation("androidx.leanback:leanback:1.2.0")
     
