@@ -41,8 +41,9 @@ Desarrollada como proyecto integrador — UTNG 9° Cuatrimestre 2025.
 
 ### Wear OS & WatchFace
 <p align="center">
-  <img src="screenshots/watchface.png" width="30%" alt="WatchFace" />
-  <img src="screenshots/wear_dashboard.png" width="30%" alt="WearDashboard" />
+  <img width="916" height="715" alt="image" src="https://github.com/user-attachments/assets/aaed62aa-deab-44c3-b13a-8f023b1d112a" />
+  <img width="786" height="648" alt="image" src="https://github.com/user-attachments/assets/b36787fe-0bf4-4156-adfb-3d0e9d6abc40" />
+
 </p>
 
 ## Autor

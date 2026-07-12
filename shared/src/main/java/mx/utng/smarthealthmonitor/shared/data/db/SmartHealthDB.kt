@@ -1,7 +1,8 @@
-package mx.utng.smarthealthmonitor.data.db
+package mx.utng.smarthealthmonitor.shared.data.db
 
 import android.content.Context
 import androidx.room.*
+import mx.utng.smarthealthmonitor.shared.data.LecturaFC
 
 @Database(
     entities = [LecturaFC::class],
