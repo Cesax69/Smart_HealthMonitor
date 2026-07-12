@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.devtools.ksp)
 }
 
@@ -31,13 +32,28 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
-    // Leanback Library
+    // Compose for TV
+    implementation(libs.androidx.tv.foundation)
+    implementation(libs.androidx.tv.material)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.activity.compose)
+    
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.8.0")
+
+    // Leanback Library (Keeping for transition if needed, though session focuses on Compose)
     implementation("androidx.leanback:leanback:1.2.0")
+    
     // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    
     // Shared Module
     implementation(project(":shared"))
     
@@ -45,7 +61,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     
-    // Fragment KTX for viewModels()
+    // Fragment KTX
     implementation("androidx.fragment:fragment-ktx:1.8.0")
     
     // Transitive dependencies
