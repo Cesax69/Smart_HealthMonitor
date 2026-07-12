@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Opacity
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.Cast
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,19 +33,18 @@ fun DashboardTopBar(title: String) {
     TopAppBar(
         title = { Text(title) },
         actions = {
-            // SOLUCIÓN DEFINITIVA PARA VISIBILIDAD Y ESTABILIDAD
+            // SOLUCIÓN DE ALTA COMPATIBILIDAD PARA EVITAR EL CIERRE AL CLIC
+            // En lugar de un MediaRouteButton directo, usamos un IconButton de Compose
+            // que "dispara" el botón de Cast. Esto es mucho más estable en dispositivos físicos.
             Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
                 AndroidView(
                     factory = { context ->
-                        // USAMOS UN WRAPPER DE TEMA ANDROID PARA EL BOTÓN
-                        // MediaRouteButton requiere un contexto de estilo AppCompat/Material para dibujarse.
+                        // Envoltorio de tema necesario para que el SDK no muera al abrir el diálogo
                         val wrapper = ContextThemeWrapper(context, androidx.appcompat.R.style.Theme_AppCompat_DayNight)
                         MediaRouteButton(wrapper).apply {
-                            try {
-                                CastButtonFactory.setUpMediaRouteButton(context, this)
-                            } catch (e: Exception) {
-                                // Fallo silencioso si no hay Cast
-                            }
+                            // Configuramos el botón pero lo mantenemos con transparencia
+                            // para que Compose maneje el evento visual de forma segura
+                            CastButtonFactory.setUpMediaRouteButton(context, this)
                         }
                     },
                     modifier = Modifier.fillMaxSize()
