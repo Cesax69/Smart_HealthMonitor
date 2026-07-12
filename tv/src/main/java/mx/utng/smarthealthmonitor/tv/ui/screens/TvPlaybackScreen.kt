@@ -30,8 +30,9 @@ fun TvPlaybackScreen(navController: NavController) {
     // Crear ExoPlayer ligado al ciclo de vida del Composable
     val exoPlayer = remember {
         ExoPlayer.Builder(ctx).build().apply {
+            // URL MÁS ESTABLE Y COMPATIBLE
             val mediaItem = MediaItem.fromUri(
-                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                "https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4"
             )
             setMediaItem(mediaItem)
             prepare()
@@ -42,13 +43,12 @@ fun TvPlaybackScreen(navController: NavController) {
     // CRÍTICO: liberar ExoPlayer al salir del Composable
     DisposableEffect(Unit) {
         onDispose {
-            exoPlayer.release()  // equivalente a onDestroyView en Fragment
+            exoPlayer.release()
         }
     }
  
     Box(Modifier.fillMaxSize().background(Color.Black)) {
  
-        // AndroidView envuelve el PlayerView del View system
         AndroidView(
             factory = { context ->
                 PlayerView(context).apply {
@@ -59,13 +59,15 @@ fun TvPlaybackScreen(navController: NavController) {
             modifier = Modifier.fillMaxSize()
         )
  
-        // Botón Back en esquina superior izquierda
+        // Botón Back con mejor contraste
         Surface(onClick = { exoPlayer.stop(); navController.popBackStack() },
                 modifier = Modifier.align(Alignment.TopStart).padding(24.dp),
                 colors = ClickableSurfaceDefaults.colors(
-                    containerColor=Color(0x88000000),
-                    focusedContainerColor=Color(0xCCFFFFFF))) {
-            Text("← Volver", color=Color.White, modifier=Modifier.padding(12.dp))
+                    containerColor=Color(0xBB000000),
+                    focusedContainerColor=Color.White)) {
+            Text("← Volver", 
+                 color = Color.White,
+                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
         }
     }
 }
