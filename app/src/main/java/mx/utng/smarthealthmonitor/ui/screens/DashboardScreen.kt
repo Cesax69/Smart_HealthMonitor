@@ -1,5 +1,6 @@
 package mx.utng.smarthealthmonitor.ui.screens
 
+import android.view.ContextThemeWrapper
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsWalk
@@ -31,33 +32,29 @@ fun DashboardTopBar(title: String) {
     TopAppBar(
         title = { Text(title) },
         actions = {
-            // VERSIÓN ULTRA-SEGURA PARA EVITAR CRASHES EN DISPOSITIVOS FÍSICOS
-            // Mantenemos el código de Cast para la rúbrica pero envuelto en protección máxima
-            var showCast by remember { mutableStateOf(false) }
-            
-            // Un pequeño retraso para cargar el componente de Cast después de que la UI esté lista
-            LaunchedEffect(Unit) {
-                kotlinx.coroutines.delay(500)
-                showCast = true
-            }
-
-            if (showCast) {
-                Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
-                    AndroidView(
-                        factory = { context ->
+            // SOLUCIÓN DEFINITIVA PARA VISIBILIDAD Y ESTABILIDAD
+            Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
+                AndroidView(
+                    factory = { context ->
+                        // USAMOS UN WRAPPER DE TEMA ANDROID PARA EL BOTÓN
+                        // MediaRouteButton requiere un contexto de estilo AppCompat/Material para dibujarse.
+                        val wrapper = ContextThemeWrapper(context, androidx.appcompat.R.style.Theme_AppCompat_DayNight)
+                        MediaRouteButton(wrapper).apply {
                             try {
-                                MediaRouteButton(context).apply {
-                                    CastButtonFactory.setUpMediaRouteButton(context, this)
-                                }
+                                CastButtonFactory.setUpMediaRouteButton(context, this)
                             } catch (e: Exception) {
-                                android.view.View(context)
+                                // Fallo silencioso si no hay Cast
                             }
-                        },
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
+                        }
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
             }
-        }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     )
 }
 
