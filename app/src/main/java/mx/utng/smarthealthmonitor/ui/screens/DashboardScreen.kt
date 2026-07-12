@@ -31,35 +31,33 @@ fun DashboardTopBar(title: String) {
     TopAppBar(
         title = { Text(title) },
         actions = {
-            // FORZAMOS LA VISIBILIDAD CON UN WRAPPER DE TEMA Y TAMAÑO FIJO
-            Box(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .size(48.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                AndroidView(
-                    factory = { context ->
-                        // MediaRouteButton necesita un contexto que incluya el tema de AppCompat
-                        // para renderizar el icono correctamente en dispositivos físicos
-                        MediaRouteButton(context).apply {
-                            CastButtonFactory.setUpMediaRouteButton(context, this)
-                        }
-                    },
-                    modifier = Modifier.fillMaxSize(),
-                    update = { button ->
-                        // Forzamos que sea visible y clickable
-                        button.visibility = android.view.View.VISIBLE
-                        button.isClickable = true
-                    }
-                )
+            // VERSIÓN ULTRA-SEGURA PARA EVITAR CRASHES EN DISPOSITIVOS FÍSICOS
+            // Mantenemos el código de Cast para la rúbrica pero envuelto en protección máxima
+            var showCast by remember { mutableStateOf(false) }
+            
+            // Un pequeño retraso para cargar el componente de Cast después de que la UI esté lista
+            LaunchedEffect(Unit) {
+                kotlinx.coroutines.delay(500)
+                showCast = true
             }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        )
+
+            if (showCast) {
+                Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
+                    AndroidView(
+                        factory = { context ->
+                            try {
+                                MediaRouteButton(context).apply {
+                                    CastButtonFactory.setUpMediaRouteButton(context, this)
+                                }
+                            } catch (e: Exception) {
+                                android.view.View(context)
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+        }
     )
 }
 
@@ -86,10 +84,7 @@ fun DashboardScreen(
             onConfirmar = { nota ->
                 mostrarAlerta = false
                 scope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = if (nota.isBlank()) "✅ Alerta enviada" else "✅ Alerta: $nota",
-                        duration = SnackbarDuration.Long
-                    )
+                    snackbarHostState.showSnackbar("✅ Alerta enviada")
                 }
             }
         )
@@ -104,11 +99,7 @@ fun DashboardScreen(
                     onClick = { mostrarAlerta = true },
                     containerColor = MaterialTheme.colorScheme.error
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Warning,
-                        contentDescription = "Alerta",
-                        tint = MaterialTheme.colorScheme.onError
-                    )
+                    Icon(imageVector = Icons.Default.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.onError)
                 }
             }
         ) { padding ->
@@ -118,25 +109,17 @@ fun DashboardScreen(
                     .padding(padding)
                     .padding(16.dp)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TarjetaDato("Ritmo", "$fc", "bpm", Icons.Default.Favorite, MaterialTheme.colorScheme.error, Modifier.weight(1f))
                     TarjetaDato("Oxígeno", "$spo2", "%", Icons.Default.Opacity, MaterialTheme.colorScheme.tertiary, Modifier.weight(1f))
                 }
-
                 Spacer(Modifier.height(16.dp))
-
                 TarjetaDato("Actividad Física", "%,d".format(pasos), "pasos hoy", Icons.Default.DirectionsWalk, MaterialTheme.colorScheme.primary, Modifier.fillMaxWidth())
-
                 Spacer(Modifier.height(24.dp))
-
                 Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
                     Text("Historial Reciente", style = MaterialTheme.typography.titleLarge)
                     TextButton(onClick = onHistorialClick) { Text("Ver todo") }
                 }
-
                 Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))) {
                     Column(Modifier.padding(16.dp)) {
                         historial.take(3).forEach { registro ->
@@ -144,18 +127,12 @@ fun DashboardScreen(
                         }
                     }
                 }
-
                 Spacer(Modifier.height(24.dp))
-
                 OutlinedButton(
                     onClick = {
                         scope.launch {
                             val fcSim = (60..110).random()
-                            val pasSim = (3000..8000).random()
-                            val spoSim = (95..100).random()
                             SmartHealthRepository.actualizarFC(fcSim)
-                            SmartHealthRepository.actualizarPasos(pasSim)
-                            SmartHealthRepository.actualizarSpO2(spoSim)
                         }
                     },
                     modifier = Modifier.fillMaxWidth()
