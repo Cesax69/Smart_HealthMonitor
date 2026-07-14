@@ -6,13 +6,13 @@ import kotlinx.coroutines.flow.asStateFlow
 
 object SmartHealthRepository {
     private val _fc = MutableStateFlow(72)
-    val fc: StateFlow<Int> = _fc.asStateFlow()
+    val fc: MutableStateFlow<Int> = _fc
 
     private val _pasos = MutableStateFlow(2500)
-    val pasos: StateFlow<Int> = _pasos.asStateFlow()
+    val pasos: MutableStateFlow<Int> = _pasos
 
     private val _spo2 = MutableStateFlow(98)
-    val spo2: StateFlow<Int> = _spo2.asStateFlow()
+    val spo2: MutableStateFlow<Int> = _spo2
 
     private val _historial = MutableStateFlow<List<LecturaFC>>(
         listOf(
