@@ -5,37 +5,60 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
-import mx.utng.smarthealthmonitor.shared.data.repository.SmartHealthRepository
+import kotlinx.coroutines.launch
+import mx.utng.smarthealthmonitor.mqtt.TvMessage
 import mx.utng.smarthealthmonitor.shared.data.LecturaFC
+import mx.utng.smarthealthmonitor.shared.data.repository.SmartHealthRepository
+import mx.utng.smarthealthmonitor.tv.mqtt.MqttTvSubscriber
 
 /**
  * Estado de la UI para la televisión.
  */
 data class TvUiState(
-    val fc: Int = 0,
+    val fcActual: Int = 0,
+    val fcEstado: String = "Normal",
+    val ultimaHora: String = "--:--",
+    val isLoading: Boolean = true,
     val lecturas: List<LecturaFC> = emptyList()
 )
 
-class TvViewModel : ViewModel() {
+class TvViewModel(private val context: Context) : ViewModel() {
 
-    // Combinar el flujo de FC actual y el historial en un solo estado para Compose
-    val state: StateFlow<TvUiState> = combine(
-        SmartHealthRepository.fcFlow,
-        SmartHealthRepository.obtenerHistorial()
-    ) { fcValue, historialList ->
-        TvUiState(fcValue, historialList)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = TvUiState()
-    )
-    
-    // Flujos individuales para compatibilidad
-    val fc: StateFlow<Int> = SmartHealthRepository.fcFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
+    private val _state = MutableStateFlow(TvUiState())
+    val state: StateFlow<TvUiState> = _state.asStateFlow()
+ 
+    // Flow de mensajes MQTT entrantes
+    private val mqttFlow = MutableStateFlow<TvMessage?>(null)
+    private val mqttSubscriber = MqttTvSubscriber(context, mqttFlow)
+ 
+    init {
+        mqttSubscriber.connect()
+ 
+        // Observar mensajes MQTT y actualizar el estado de la UI
+        viewModelScope.launch {
+            mqttFlow.collect { tvMsg ->
+                tvMsg ?: return@collect
+                _state.update { it.copy(
+                    fcActual = tvMsg.bpm,
+                    fcEstado = tvMsg.estado,
+                    ultimaHora = tvMsg.hora,
+                    isLoading = false
+                )}
+            }
+        }
 
-    val historial: StateFlow<List<LecturaFC>> = SmartHealthRepository.obtenerHistorial()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+        // También mantenemos la carga del historial
+        viewModelScope.launch {
+            SmartHealthRepository.obtenerHistorial().collect { list ->
+                _state.update { it.copy(lecturas = list) }
+            }
+        }
+    }
+ 
+    override fun onCleared() {
+        super.onCleared()
+        mqttSubscriber.disconnect()
+    }
 }
 
 /**
@@ -45,7 +68,7 @@ class TvViewModelFactory(private val context: Context) : ViewModelProvider.Facto
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TvViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return TvViewModel() as T
+            return TvViewModel(context) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
