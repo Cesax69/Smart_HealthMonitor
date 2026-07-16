@@ -6,6 +6,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import mx.utng.smarthealthmonitor.shared.data.SmartHealthRepository
 import org.eclipse.paho.client.mqttv3.*
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import java.text.SimpleDateFormat
@@ -27,9 +28,10 @@ class MqttAppService(
         if (client?.isConnected == true) return
 
         try {
+            // Usamos generateId para asegurar una conexión estable
             client = MqttAsyncClient(
                 MqttConfig.BROKER_URL,
-                MqttConfig.generateId("app"), 
+                MqttConfig.generateId("phone"), 
                 MemoryPersistence()
             )
      
@@ -53,7 +55,7 @@ class MqttAppService(
             client?.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(token: IMqttToken?) {
                     client?.subscribe(MqttConfig.TOPIC_FC, MqttConfig.QOS)
-                    Log.d("MQTT_APP", "✅ Puente conectado y escuchando")
+                    Log.d("MQTT_APP", "✅ Puente conectado y escuchando al Reloj")
                     iniciarPuenteReactivo()
                 }
                 override fun onFailure(token: IMqttToken?, ex: Throwable?) {
@@ -81,8 +83,12 @@ class MqttAppService(
     private fun handleRemoteFc(msg: MqttMessage) {
         try {
             val fcMsg = Json.decodeFromString<FcMessage>(String(msg.payload))
-            // Actualizar repositorio (esto disparará el recolector de iniciarPuenteReactivo)
-            // Nota: El repositorio debe ser actualizado en el Main Thread o vía suspend
+            Log.d("MQTT_APP", "📥 Dato recibido del Reloj via MQTT: ${fcMsg.bpm}")
+            
+            // ACTUALIZAR REPOSITORIO (Esto hace que aparezca en el celular y se re-envíe a la TV)
+            scope.launch {
+                SmartHealthRepository.actualizarFC(fcMsg.bpm)
+            }
         } catch (e: Exception) {
             Log.e("MQTT_APP", "Error decodificando: ${e.message}")
         }

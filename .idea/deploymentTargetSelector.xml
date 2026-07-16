@@ -23,7 +23,7 @@
       </SelectionState>
       <SelectionState runConfigName="wear">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-07-16T04:10:30.750998400Z">
+        <DropdownSelection timestamp="2026-07-16T04:18:17.784754500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\cesar\.android\avd\Mi_reloj.avd" />
@@ -61,7 +61,7 @@
       </SelectionState>
       <SelectionState runConfigName="tv">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-07-16T04:17:22.807195100Z">
+        <DropdownSelection timestamp="2026-07-16T04:34:25.454738400Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\cesar\.android\avd\Television_1080p.avd" />

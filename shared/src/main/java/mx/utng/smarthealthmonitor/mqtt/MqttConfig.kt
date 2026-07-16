@@ -12,10 +12,11 @@ object MqttConfig {
  
     const val QOS = 1
  
-    // Mantenemos compatibilidad con IDs estáticos pero permitimos generación dinámica
-    const val CLIENT_WEAR = "smarthealthmonitor-wear"
-    const val CLIENT_APP  = "smarthealthmonitor-app"
-    const val CLIENT_TV   = "smarthealthmonitor-tv"
+    // Generación dinámica de IDs para evitar que los dispositivos se expulsen entre sí
+    fun generateId(prefix: String) = "$prefix-${(1000..9999).random()}"
 
-    fun generateId(prefix: String) = "$prefix-${System.currentTimeMillis() % 10000}"
+    // IDs estáticos (Mantenidos por compatibilidad, pero se recomienda usar generateId)
+    const val CLIENT_WEAR = "shm-wear-device"
+    const val CLIENT_APP  = "shm-phone-device"
+    const val CLIENT_TV   = "shm-tv-device"
 }
