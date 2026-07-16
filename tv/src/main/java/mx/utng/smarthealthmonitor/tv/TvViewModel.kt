@@ -20,7 +20,9 @@ data class TvUiState(
     val ultimaHora: String = "--:--",
     val isLoading: Boolean = true,
     val connectionStatus: String = "Desconectado",
-    val lecturas: List<LecturaFC> = emptyList()
+    val lecturas: List<LecturaFC> = emptyList(),
+    val promedioBpm: Double = 0.0,
+    val picosEstres: Int = 0
 )
 
 class TvViewModel(private val context: Context) : ViewModel() {
@@ -28,6 +30,8 @@ class TvViewModel(private val context: Context) : ViewModel() {
     private val _state = MutableStateFlow(TvUiState())
     val state: StateFlow<TvUiState> = _state.asStateFlow()
  
+    private val neonRepo = mx.utng.smarthealthmonitor.tv.data.TvNeonRepository()
+
     // Flow de mensajes MQTT entrantes
     private val mqttFlow = MutableStateFlow<TvMessage?>(null)
     private val mqttSubscriber = MqttTvSubscriber(context, mqttFlow) { status ->
@@ -54,6 +58,17 @@ class TvViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             SmartHealthRepository.obtenerHistorial().collect { list ->
                 _state.update { it.copy(lecturas = list) }
+            }
+        }
+
+        // Consultas avanzadas de Neon (Reto Extra)
+        viewModelScope.launch {
+            try {
+                val promedio = neonRepo.obtenerPromedioBpmDelDia()
+                val picos = neonRepo.obtenerPicosDeEstres()
+                _state.update { it.copy(promedioBpm = promedio, picosEstres = picos) }
+            } catch (e: Exception) {
+                android.util.Log.e("TvViewModel", "Error cargando Neon", e)
             }
         }
     }

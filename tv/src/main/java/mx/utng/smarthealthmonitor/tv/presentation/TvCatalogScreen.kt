@@ -61,6 +61,21 @@ fun TvCatalogScreen(onCardClick: (Int) -> Unit, viewModel: TvViewModel = viewMod
                     Text("Ver Detalle: ${state.lecturas.first().bpm} bpm")
                 }
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            // Reto Extra: Consultas avanzadas de PostgreSQL Neon
+            Text("Estadísticas del Día (Nube Neon)", style = MaterialTheme.typography.titleMedium, color = Color.LightGray)
+            Row(horizontalArrangement = Arrangement.spacedBy(24.dp), modifier = Modifier.padding(16.dp)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Promedio Bpm", style = MaterialTheme.typography.labelSmall)
+                    Text("${state.promedioBpm}", style = MaterialTheme.typography.titleLarge, color = Color.Cyan)
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Picos de Estrés", style = MaterialTheme.typography.labelSmall)
+                    Text("${state.picosEstres}", style = MaterialTheme.typography.titleLarge, color = Color.Red)
+                }
+            }
         }
     }
 }
