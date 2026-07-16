@@ -4,9 +4,7 @@ import android.app.Application
 import android.util.Log
 import com.google.android.gms.cast.framework.CastContext
 import mx.utng.smarthealthmonitor.mqtt.MqttAppService
-import mx.utng.smarthealthmonitor.shared.data.repository.SmartHealthRepository
-import mx.utng.smarthealthmonitor.shared.data.SmartHealthRepository as BaseSharedRepo
-import java.util.concurrent.Executors
+import mx.utng.smarthealthmonitor.shared.data.SmartHealthRepository
 
 class SmartHealthApp : Application() {
     lateinit var mqttService: MqttAppService
@@ -21,10 +19,10 @@ class SmartHealthApp : Application() {
             Log.e("SmartHealthApp", "Error inicializando repositorio: ${e.message}")
         }
 
-        // 2. Inicialización de MQTT
+        // 2. Inicialización de MQTT Puente
         mqttService = MqttAppService(
             context = this,
-            fcFlow  = BaseSharedRepo.fc
+            fcFlow  = SmartHealthRepository.fcFlow as kotlinx.coroutines.flow.MutableStateFlow<Int>
         )
         mqttService.connect()
 

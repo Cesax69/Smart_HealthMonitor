@@ -3,13 +3,13 @@ package mx.utng.smarthealthmonitor.tv.presentation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.tv.material3.*
 import mx.utng.smarthealthmonitor.tv.TvViewModel
@@ -18,7 +18,7 @@ import mx.utng.smarthealthmonitor.tv.TvViewModelFactory
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun TvCatalogScreen(onCardClick: (Int) -> Unit, viewModel: TvViewModel = viewModel(factory = TvViewModelFactory(LocalContext.current))) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsState()
     
     Box(
         modifier = Modifier
@@ -32,12 +32,21 @@ fun TvCatalogScreen(onCardClick: (Int) -> Unit, viewModel: TvViewModel = viewMod
             Spacer(modifier = Modifier.height(16.dp))
 
             // MOSTRAR FC EN TIEMPO REAL DESDE MQTT
-            Card(onClick = {}) {
+            Surface(
+                onClick = {},
+                modifier = Modifier.padding(16.dp),
+                shape = ClickableSurfaceDefaults.shape(MaterialTheme.shapes.medium)
+            ) {
                 Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Ritmo Cardíaco Actual", style = MaterialTheme.typography.titleMedium)
-                    Text("${state.fcActual} bpm", style = MaterialTheme.typography.displayLarge, color = Color.Red)
-                    Text("Estado: ${state.fcEstado}", style = MaterialTheme.typography.bodyLarge)
-                    Text("Sincronizado: ${state.ultimaHora}", style = MaterialTheme.typography.labelSmall)
+                    
+                    if (state.fcActual == 0) {
+                        Text("Esperando datos...", style = MaterialTheme.typography.labelSmall)
+                    } else {
+                        Text("${state.fcActual} bpm", style = MaterialTheme.typography.displayLarge, color = Color.Red)
+                        Text("Estado: ${state.fcEstado}", style = MaterialTheme.typography.bodyLarge)
+                        Text("Sincronizado: ${state.ultimaHora}", style = MaterialTheme.typography.labelSmall)
+                    }
                 }
             }
 

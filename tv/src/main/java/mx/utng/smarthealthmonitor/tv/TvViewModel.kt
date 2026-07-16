@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import mx.utng.smarthealthmonitor.mqtt.TvMessage
 import mx.utng.smarthealthmonitor.shared.data.LecturaFC
-import mx.utng.smarthealthmonitor.shared.data.repository.SmartHealthRepository
+import mx.utng.smarthealthmonitor.shared.data.SmartHealthRepository
 import mx.utng.smarthealthmonitor.tv.mqtt.MqttTvSubscriber
 
 /**

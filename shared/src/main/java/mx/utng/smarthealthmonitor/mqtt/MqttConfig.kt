@@ -12,8 +12,10 @@ object MqttConfig {
  
     const val QOS = 1
  
-    // IDs ÚNICOS para evitar que un dispositivo expulse al otro del broker
-    val CLIENT_WEAR = "shm-wear-${(100..999).random()}"
-    val CLIENT_APP  = "shm-phone-${(100..999).random()}"
-    val CLIENT_TV   = "shm-tv-${(100..999).random()}"
+    // Mantenemos compatibilidad con IDs estáticos pero permitimos generación dinámica
+    const val CLIENT_WEAR = "smarthealthmonitor-wear"
+    const val CLIENT_APP  = "smarthealthmonitor-app"
+    const val CLIENT_TV   = "smarthealthmonitor-tv"
+
+    fun generateId(prefix: String) = "$prefix-${System.currentTimeMillis() % 10000}"
 }
