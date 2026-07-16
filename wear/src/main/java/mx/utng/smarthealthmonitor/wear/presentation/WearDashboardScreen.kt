@@ -40,6 +40,16 @@ fun WearDashboardScreen(
                 )
             }
 
+            // BOTÓN DE EMERGENCIA PARA ACTIVAR EL FLUJO MQTT SI EL SENSOR NO RESPONDE
+            item {
+                Button(
+                    onClick = { viewModel.simularPulso() },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)
+                ) {
+                    Text("🔄 Simular")
+                }
+            }
+
             item {
                 Chip(
                     label = { Text("🕒 Historial") },
