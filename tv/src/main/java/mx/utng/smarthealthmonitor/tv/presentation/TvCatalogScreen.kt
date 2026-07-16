@@ -27,8 +27,20 @@ fun TvCatalogScreen(onCardClick: (Int) -> Unit, viewModel: TvViewModel = viewMod
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("Catálogo de Salud SmartHealth", style = MaterialTheme.typography.headlineLarge, color = Color.White)
+            Text("Salud en Tiempo Real (MQTT)", style = MaterialTheme.typography.headlineLarge, color = Color.White)
             
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // MOSTRAR FC EN TIEMPO REAL DESDE MQTT
+            Card(onClick = {}) {
+                Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Ritmo Cardíaco Actual", style = MaterialTheme.typography.titleMedium)
+                    Text("${state.fcActual} bpm", style = MaterialTheme.typography.displayLarge, color = Color.Red)
+                    Text("Estado: ${state.fcEstado}", style = MaterialTheme.typography.bodyLarge)
+                    Text("Sincronizado: ${state.ultimaHora}", style = MaterialTheme.typography.labelSmall)
+                }
+            }
+
             Spacer(modifier = Modifier.height(32.dp))
             
             if (state.lecturas.isEmpty()) {
