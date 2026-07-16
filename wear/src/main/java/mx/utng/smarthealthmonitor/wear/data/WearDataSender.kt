@@ -36,6 +36,14 @@ class WearDataSender(private val context: Context) {
                 else -> "Normal"
             }
             mqttPublisher.publishFC(bpm, estado)
+            // 3. Publicar directamente en Neon Serverless HTTP API
+            try {
+                val horaActual = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).format(java.util.Date())
+                WearNeonRepository().publicarLecturaNeon(bpm, estado, horaActual)
+            } catch (e: Exception) {
+                // Fallará si no hay internet (es normal, el teléfono lo sincronizará luego por Room)
+                Log.w("WearDataSender", "No se pudo publicar a Neon directamente")
+            }
 
         } catch (e: Exception) {
             Log.e("WearDataSender", "Error al enviar FC", e)
