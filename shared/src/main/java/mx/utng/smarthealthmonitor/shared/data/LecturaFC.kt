@@ -1,18 +1,17 @@
-﻿package mx.utng.smarthealthmonitor.shared.data
+package mx.utng.smarthealthmonitor.shared.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "lecturas_fc")
 data class LecturaFC(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val valorBpm: Int,
-    val timestamp: Long,
-    val hora: String,
-    val esNormal: Boolean
-) {
-    // Propiedades calculadas para facilitar el uso en UI de TV
-    val bpm: Int get() = valorBpm
-    val estado: String get() = if (esNormal) "Normal" else "Elevada"
-}
+    val id           : Int     = 0,
+    val bpm          : Int,
+    val estado       : String,
+    val dispositivo  : String  = "app",  // wear | app | tv
+    val hora         : String,
+    @ColumnInfo(name = "sincronizado")
+    val sincronizado : Boolean = false   // false = pendiente de sync
+)
