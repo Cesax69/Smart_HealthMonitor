@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.devtools.ksp)
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
 }
 
 android {
@@ -29,4 +30,11 @@ dependencies {
     api(libs.androidx.room.runtime)
     api(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    // Serialization
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // Eclipse Paho MQTT para Android
+    api("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
+    api("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
 }

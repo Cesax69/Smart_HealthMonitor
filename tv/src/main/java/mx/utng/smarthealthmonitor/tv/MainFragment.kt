@@ -34,8 +34,9 @@ class MainFragment : BrowseSupportFragment() {
     private fun observarDatos() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.historial.collect { lecturas ->
+                viewModel.state.collect { uiState ->
                     histAdapter.clear()
+                    val lecturas = uiState.lecturas
                     if (lecturas.isEmpty()) {
                         // SI NO HAY DATOS EN ROOM, MOSTRAR MOCKDATA PARA LA EVIDENCIA
                         MockData.historialFC.forEach { registro ->
