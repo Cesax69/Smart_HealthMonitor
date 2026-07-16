@@ -17,10 +17,7 @@ import java.util.Locale
  * SERVICIO PUENTE (BRIDGE) REACTIVO
  * Observa el repositorio y publica a la TV automáticamente.
  */
-class MqttAppService(
-    private val context : Context,
-    private val fcFlow  : StateFlow<Int>
-) {
+class MqttAppService(private val context: Context) {
     private var client: MqttAsyncClient? = null
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
  
@@ -28,7 +25,6 @@ class MqttAppService(
         if (client?.isConnected == true) return
 
         try {
-            // Usamos generateId para asegurar una conexión estable
             client = MqttAsyncClient(
                 MqttConfig.BROKER_URL,
                 MqttConfig.generateId("phone"), 
@@ -67,14 +63,9 @@ class MqttAppService(
         }
     }
 
-    /**
-     * OBSERVA EL REPOSITORIO LOCAL
-     * Cada vez que el número cambia (vía Bluetooth o Simulación),
-     * este método lo envía a la TV por MQTT.
-     */
     private fun iniciarPuenteReactivo() {
         scope.launch {
-            fcFlow.collect { bpm ->
+            SmartHealthRepository.fcFlow.collect { bpm ->
                 if (bpm > 0) rePublicarATV(bpm)
             }
         }
@@ -83,9 +74,9 @@ class MqttAppService(
     private fun handleRemoteFc(msg: MqttMessage) {
         try {
             val fcMsg = Json.decodeFromString<FcMessage>(String(msg.payload))
-            Log.d("MQTT_APP", "📥 Dato recibido del Reloj via MQTT: ${fcMsg.bpm}")
+            Log.d("MQTT_APP", "📥 Dato recibido del Reloj: ${fcMsg.bpm}")
             
-            // ACTUALIZAR REPOSITORIO (Esto hace que aparezca en el celular y se re-envíe a la TV)
+            // Actualizar repositorio centralizado
             scope.launch {
                 SmartHealthRepository.actualizarFC(fcMsg.bpm)
             }

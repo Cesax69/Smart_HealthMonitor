@@ -12,26 +12,31 @@ class SmartHealthApp : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        // 1. Inicialización de Room
+        // 1. Inicialización de Room (Crítico)
         try {
             SmartHealthRepository.init(this)
         } catch (e: Exception) {
-            Log.e("SmartHealthApp", "Error inicializando repositorio: ${e.message}")
+            Log.e("SmartHealthApp", "Error Room: ${e.message}")
         }
 
-        // 2. Inicialización de MQTT Puente
-        mqttService = MqttAppService(
-            context = this,
-            fcFlow  = SmartHealthRepository.fcFlow as kotlinx.coroutines.flow.MutableStateFlow<Int>
-        )
-        mqttService.connect()
+        // 2. Inicialización de MQTT Puente (Seguro)
+        try {
+            mqttService = MqttAppService(this)
+            mqttService.connect()
+        } catch (e: Exception) {
+            Log.e("SmartHealthApp", "Error MQTT: ${e.message}")
+        }
 
         // 3. Inicialización SEGURA de Cast SDK
-        try {
-            CastContext.getSharedInstance(this)
-            Log.d("SmartHealthApp", "Cast SDK inicializado con éxito")
-        } catch (e: Exception) {
-            Log.e("SmartHealthApp", "Cast SDK no disponible: ${e.message}")
-        }
+        // Usamos un hilo separado porque CastContext.getSharedInstance puede tardar mucho
+        // en hardware real y disparar el cierre de Android por falta de respuesta.
+        Thread {
+            try {
+                CastContext.getSharedInstance(this)
+                Log.d("SmartHealthApp", "Cast SDK ok")
+            } catch (e: Exception) {
+                Log.e("SmartHealthApp", "Cast SDK fail: ${e.message}")
+            }
+        }.start()
     }
 }
