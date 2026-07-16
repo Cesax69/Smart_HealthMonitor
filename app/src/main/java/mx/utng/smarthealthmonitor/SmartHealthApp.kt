@@ -38,5 +38,8 @@ class SmartHealthApp : Application() {
                 Log.e("SmartHealthApp", "Cast SDK fail: ${e.message}")
             }
         }.start()
+
+        // 4. Programar sync periódico con Neon
+        mx.utng.smarthealthmonitor.data.sync.NeonSyncWorker.schedule(this)
     }
 }
