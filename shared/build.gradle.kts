@@ -1,3 +1,11 @@
+import java.util.Properties
+
+val localProps = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProps.load(localPropertiesFile.inputStream())
+}
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -10,6 +18,8 @@ android {
     compileSdk = 35
 
     defaultConfig {
+        buildConfigField("String","NEON_API_KEY","\"${localProps["NEON_API_KEY"]}\"")
+        buildConfigField("String","NEON_HOST","\"${localProps["NEON_HOST"]}\"")
         minSdk = 26
     }
 
@@ -19,6 +29,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
 
@@ -37,4 +50,10 @@ dependencies {
     // Eclipse Paho MQTT para Android
     api("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
     api("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
+
+    // Retrofit + OkHttp para llamadas a Neon HTTP API
+    api("com.squareup.retrofit2:retrofit:2.11.0")
+    api("com.squareup.retrofit2:converter-gson:2.11.0")
+    api("com.squareup.okhttp3:okhttp:4.12.0")
+    api("com.squareup.okhttp3:logging-interceptor:4.12.0")
 }

@@ -79,6 +79,9 @@ dependencies {
     implementation("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
     // Kotlinx Serialization para JSON
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    
+    // WorkManager para sync periódico en background
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
