@@ -5,18 +5,11 @@ object MqttConfig {
     const val USERNAME    = "SmartHealth"
     const val PASSWORD    = "SmartHealth123"
  
-    // Topics
+    // Topics UTNG
     const val TOPIC_FC    = "utng/smarthealthmonitor/fc"
     const val TOPIC_TV    = "utng/smarthealthmonitor/tv"
-    const val TOPIC_ALERT = "utng/smarthealthmonitor/alerta"
  
     const val QOS = 1
  
-    // Generación dinámica de IDs para evitar que los dispositivos se expulsen entre sí
     fun generateId(prefix: String) = "$prefix-${(1000..9999).random()}"
-
-    // IDs estáticos (Mantenidos por compatibilidad, pero se recomienda usar generateId)
-    const val CLIENT_WEAR = "shm-wear-device"
-    const val CLIENT_APP  = "shm-phone-device"
-    const val CLIENT_TV   = "shm-tv-device"
 }

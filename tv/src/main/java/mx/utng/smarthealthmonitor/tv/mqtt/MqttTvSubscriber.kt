@@ -10,37 +10,17 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
  
 class MqttTvSubscriber(
     private val context : Context,
-    private val tvFlow  : MutableStateFlow<TvMessage?>
+    private val tvFlow  : MutableStateFlow<TvMessage?>,
+    private val onStatus: (String) -> Unit
 ) {
     private var client: MqttAsyncClient? = null
  
     fun connect() {
         if (client?.isConnected == true) return
+        onStatus("Conectando...")
 
         try {
-            client = MqttAsyncClient(
-                MqttConfig.BROKER_URL,
-                MqttConfig.generateId("tv"), 
-                MemoryPersistence()
-            )
-     
-            client?.setCallback(object : MqttCallback {
-                override fun messageArrived(topic: String, msg: MqttMessage) {
-                    if (topic == MqttConfig.TOPIC_TV) {
-                        try {
-                            val tvMsg = Json.decodeFromString<TvMessage>(String(msg.payload))
-                            tvFlow.value = tvMsg
-                            Log.d("MQTT_TV","📺 Dato recibido de la Nube: ${tvMsg.bpm} bpm")
-                        } catch (e: Exception) {
-                            Log.e("MQTT_TV", "Error decodificando TV: ${e.message}")
-                        }
-                    }
-                }
-                override fun connectionLost(cause: Throwable?) {
-                    Log.w("MQTT_TV", "TV perdió conexión, reintentando...")
-                }
-                override fun deliveryComplete(token: IMqttDeliveryToken?) {}
-            })
+            client = MqttAsyncClient(MqttConfig.BROKER_URL, MqttConfig.generateId("tv"), MemoryPersistence())
      
             val options = MqttConnectOptions().apply {
                 userName = MqttConfig.USERNAME
@@ -48,18 +28,33 @@ class MqttTvSubscriber(
                 isCleanSession = true
                 socketFactory = javax.net.ssl.SSLSocketFactory.getDefault()
             }
+
+            client?.setCallback(object : MqttCallback {
+                override fun messageArrived(topic: String, msg: MqttMessage) {
+                    if (topic == MqttConfig.TOPIC_TV) {
+                        val tvMsg = Json.decodeFromString<TvMessage>(String(msg.payload))
+                        tvFlow.value = tvMsg
+                        Log.d("MQTT_TV","📺 TV Recibió: ${tvMsg.bpm}")
+                    }
+                }
+                override fun connectionLost(cause: Throwable?) {
+                    onStatus("Desconectado")
+                }
+                override fun deliveryComplete(token: IMqttDeliveryToken?) {}
+            })
      
             client?.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(token: IMqttToken?) {
                     client?.subscribe(MqttConfig.TOPIC_TV, MqttConfig.QOS)
-                    Log.d("MQTT_TV","✅ TV Conectada y escuchando al Teléfono")
+                    onStatus("En línea")
+                    Log.d("MQTT_TV","✅ TV Conectada")
                 }
                 override fun onFailure(token: IMqttToken?, ex: Throwable?) {
-                    Log.e("MQTT_TV","❌ TV Error conexión: ${ex?.message}")
+                    onStatus("Error: ${ex?.message}")
                 }
             })
         } catch (e: Exception) {
-            Log.e("MQTT_TV", "❌ Error inicialización TV: ${e.message}")
+            onStatus("Error Init")
         }
     }
     fun disconnect() { try { client?.disconnect() } catch(e: Exception) {} }

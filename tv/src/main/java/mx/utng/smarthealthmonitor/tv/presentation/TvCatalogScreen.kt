@@ -27,11 +27,11 @@ fun TvCatalogScreen(onCardClick: (Int) -> Unit, viewModel: TvViewModel = viewMod
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("Salud en Tiempo Real (MQTT)", style = MaterialTheme.typography.headlineLarge, color = Color.White)
+            Text("SmartHealth Monitor (MQTT)", style = MaterialTheme.typography.headlineLarge, color = Color.White)
+            Text("Estado: ${state.connectionStatus}", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
             
             Spacer(modifier = Modifier.height(16.dp))
 
-            // MOSTRAR FC EN TIEMPO REAL DESDE MQTT
             Surface(
                 onClick = {},
                 modifier = Modifier.padding(16.dp),
@@ -41,11 +41,11 @@ fun TvCatalogScreen(onCardClick: (Int) -> Unit, viewModel: TvViewModel = viewMod
                     Text("Ritmo Cardíaco Actual", style = MaterialTheme.typography.titleMedium)
                     
                     if (state.fcActual == 0) {
-                        Text("Esperando datos...", style = MaterialTheme.typography.labelSmall)
+                        Text("Esperando latidos...", style = MaterialTheme.typography.labelSmall)
                     } else {
                         Text("${state.fcActual} bpm", style = MaterialTheme.typography.displayLarge, color = Color.Red)
                         Text("Estado: ${state.fcEstado}", style = MaterialTheme.typography.bodyLarge)
-                        Text("Sincronizado: ${state.ultimaHora}", style = MaterialTheme.typography.labelSmall)
+                        Text("Última actualización: ${state.ultimaHora}", style = MaterialTheme.typography.labelSmall)
                     }
                 }
             }
@@ -54,7 +54,7 @@ fun TvCatalogScreen(onCardClick: (Int) -> Unit, viewModel: TvViewModel = viewMod
             
             if (state.lecturas.isEmpty()) {
                 Button(onClick = { onCardClick(999) }) {
-                    Text("Abrir Registro de Prueba (999)")
+                    Text("Simular Historial")
                 }
             } else {
                 Button(onClick = { onCardClick(state.lecturas.first().id) }) {

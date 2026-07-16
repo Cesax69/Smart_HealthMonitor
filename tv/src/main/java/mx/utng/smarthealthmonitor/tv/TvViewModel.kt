@@ -19,6 +19,7 @@ data class TvUiState(
     val fcEstado: String = "Normal",
     val ultimaHora: String = "--:--",
     val isLoading: Boolean = true,
+    val connectionStatus: String = "Desconectado",
     val lecturas: List<LecturaFC> = emptyList()
 )
 
@@ -29,7 +30,9 @@ class TvViewModel(private val context: Context) : ViewModel() {
  
     // Flow de mensajes MQTT entrantes
     private val mqttFlow = MutableStateFlow<TvMessage?>(null)
-    private val mqttSubscriber = MqttTvSubscriber(context, mqttFlow)
+    private val mqttSubscriber = MqttTvSubscriber(context, mqttFlow) { status ->
+        _state.update { it.copy(connectionStatus = status) }
+    }
  
     init {
         mqttSubscriber.connect()
@@ -47,7 +50,7 @@ class TvViewModel(private val context: Context) : ViewModel() {
             }
         }
 
-        // También mantenemos la carga del historial
+        // Cargar historial
         viewModelScope.launch {
             SmartHealthRepository.obtenerHistorial().collect { list ->
                 _state.update { it.copy(lecturas = list) }

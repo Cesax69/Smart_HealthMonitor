@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-07-16T04:17:19.347221800Z">
+        <DropdownSelection timestamp="2026-07-16T04:51:43.844693800Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\cesar\.android\avd\Television_1080p.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=447162f" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -61,10 +61,10 @@
       </SelectionState>
       <SelectionState runConfigName="tv">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-07-16T04:50:17.663591Z">
+        <DropdownSelection timestamp="2026-07-16T04:51:39.948097900Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\cesar\.android\avd\Television_1080p.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=447162f" />
             </handle>
           </Target>
         </DropdownSelection>
