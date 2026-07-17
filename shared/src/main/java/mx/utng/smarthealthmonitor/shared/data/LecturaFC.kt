@@ -14,4 +14,9 @@ data class LecturaFC(
     val hora         : String,
     @ColumnInfo(name = "sincronizado")
     val sincronizado : Boolean = false   // false = pendiente de sync
-)
+) {
+    // Propiedades calculadas para retrocompatibilidad con la UI anterior
+    val valorBpm: Int get() = bpm
+    val esNormal: Boolean get() = estado != "FC Alta" && estado != "FC_ALTA"
+    val timestamp: Long get() = System.currentTimeMillis() // Dummy value since timestamp was removed
+}

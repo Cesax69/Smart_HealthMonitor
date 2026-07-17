@@ -42,10 +42,9 @@ class MainFragment : BrowseSupportFragment() {
                         MockData.historialFC.forEach { registro ->
                             histAdapter.add(LecturaFC(
                                 id = registro.id,
-                                valorBpm = registro.bpm,
-                                timestamp = 0L,
-                                hora = registro.fecha,
-                                esNormal = registro.esNormal
+                                bpm = registro.bpm,
+                                estado = if (registro.esNormal) "Normal" else "FC Alta",
+                                hora = registro.fecha
                             ))
                         }
                     } else {
@@ -66,8 +65,8 @@ class MainFragment : BrowseSupportFragment() {
 
         // Fila 2: Resumen (Datos fijos para asegurar que se vea algo)
         val resumenAdapter = ArrayObjectAdapter(FCCardPresenter())
-        resumenAdapter.add(LecturaFC(id=-1, valorBpm=72, timestamp=0L, hora="Frecuencia Promedio", esNormal=true))
-        resumenAdapter.add(LecturaFC(id=-2, valorBpm=4500, timestamp=0L, hora="Pasos Totales", esNormal=true))
+        resumenAdapter.add(LecturaFC(id=-1, bpm=72, estado="Normal", hora="Frecuencia Promedio"))
+        resumenAdapter.add(LecturaFC(id=-2, bpm=4500, estado="Normal", hora="Pasos Totales"))
         rowsAdapter.add(ListRow(HeaderItem(1, "Resumen Diario"), resumenAdapter))
 
         this.adapter = rowsAdapter

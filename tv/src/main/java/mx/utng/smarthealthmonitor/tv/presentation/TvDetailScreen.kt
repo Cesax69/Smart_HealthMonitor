@@ -31,7 +31,7 @@ fun TvDetailScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val lectura = state.lecturas.find { it.id == lecturaId } 
-        ?: LecturaFC(id=999, valorBpm=72, timestamp=0L, hora="10:00 AM", esNormal=true)
+        ?: LecturaFC(id=999, bpm=72, estado="Normal", hora="10:00 AM")
  
     // FocusRequester para mover el foco al primer botón al entrar
     val firstBtnFocus = remember { FocusRequester() }

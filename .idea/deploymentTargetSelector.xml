@@ -61,10 +61,10 @@
       </SelectionState>
       <SelectionState runConfigName="tv">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-07-16T05:30:10.240735100Z">
+        <DropdownSelection timestamp="2026-07-17T05:58:51.058744400Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\cesar\.android\avd\Television_1080p.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\cesar\.android\avd\Mi_reloj.avd" />
             </handle>
           </Target>
         </DropdownSelection>

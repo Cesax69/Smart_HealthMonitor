@@ -20,6 +20,7 @@ android {
     defaultConfig {
         buildConfigField("String","NEON_API_KEY","\"${localProps["NEON_API_KEY"]}\"")
         buildConfigField("String","NEON_HOST","\"${localProps["NEON_HOST"]}\"")
+        buildConfigField("String","NEON_PASSWORD","\"${localProps["NEON_PASSWORD"]}\"")
         minSdk = 26
     }
 

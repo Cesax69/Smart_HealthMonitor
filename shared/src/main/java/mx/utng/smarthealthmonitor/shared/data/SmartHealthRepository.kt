@@ -1,4 +1,4 @@
-﻿package mx.utng.smarthealthmonitor.shared.data
+package mx.utng.smarthealthmonitor.shared.data
 
 import android.content.Context
 import kotlinx.coroutines.flow.Flow
@@ -42,22 +42,23 @@ object SmartHealthRepository {
         get() = _dao ?: throw IllegalStateException("Repository not initialized. Call init(context) first.")
 
     fun obtenerHistorial(): Flow<List<LecturaFC>> {
-        return dao.getAll()
+        return dao.obtenerTodas()
     }
 
     suspend fun actualizarFC(bpm: Int) {
         // 1. Actualizar flujo en memoria
         _fc.value = bpm
         
-        // 2. Persistir en base de datos Room
+        // 2. Persistir en base de datos Room usando SyncRepository
         val lectura = LecturaFC(
-            valorBpm = bpm,
-            timestamp = System.currentTimeMillis(),
-            hora = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date()),
-            esNormal = bpm in 60..100
+            bpm = bpm,
+            estado = if (bpm > 100) "FC Alta" else "Normal",
+            dispositivo = "app",
+            hora = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()),
+            sincronizado = false
         )
         try {
-            dao.insert(lectura)
+            mx.utng.smarthealthmonitor.shared.data.repository.SyncRepository(dao).insertarLectura(lectura)
         } catch (e: Exception) {
             // Error al insertar
         }

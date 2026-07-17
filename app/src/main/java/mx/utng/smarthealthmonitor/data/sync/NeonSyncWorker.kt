@@ -34,13 +34,21 @@ class NeonSyncWorker(
     companion object {
         const val WORK_NAME = "NeonSyncWork"
  
-        /** Programar sync periódico cada 30 minutos */
+        /** Programar sync periódico cada 30 minutos y uno inmediato */
         fun schedule(context: Context) {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
  
-            val request = PeriodicWorkRequestBuilder<NeonSyncWorker>(
+            // 1. Sincronización inmediata (útil para pruebas)
+            val immediateRequest = OneTimeWorkRequestBuilder<NeonSyncWorker>()
+                .setConstraints(constraints)
+                .build()
+                
+            WorkManager.getInstance(context).enqueue(immediateRequest)
+
+            // 2. Sincronización periódica (cada 30 min)
+            val periodicRequest = PeriodicWorkRequestBuilder<NeonSyncWorker>(
                 30, TimeUnit.MINUTES
             ).setConstraints(constraints)
              .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 5, TimeUnit.MINUTES)
@@ -49,7 +57,7 @@ class NeonSyncWorker(
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME,
                 ExistingPeriodicWorkPolicy.KEEP,
-                request
+                periodicRequest
             )
         }
     }
